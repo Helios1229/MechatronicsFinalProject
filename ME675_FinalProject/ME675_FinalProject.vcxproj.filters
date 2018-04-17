@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="LcdDisplay.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="LineFollower.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="StepperControl.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="IR_Sensor.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LcdDisplay.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="LineFollower.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="StepperControl.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ME675_FinalProject.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="__vm\.ME675_FinalProject.vsarduino.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="headers">
+      <UniqueIdentifier>{aa52b4e2-cf6f-4f23-9a8e-2cde3d6a0d24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources">
+      <UniqueIdentifier>{28566f52-3ffd-4707-b163-58ef8114b2c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{e43750d1-86ad-4a3c-a01b-a3e9196128ad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ME675_FinalProject.ino">
+      <Filter>main</Filter>
+    </None>
+  </ItemGroup>
+</Project>
