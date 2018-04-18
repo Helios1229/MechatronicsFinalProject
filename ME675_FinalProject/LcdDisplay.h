@@ -9,5 +9,8 @@ const unsigned int LCD_NUMBER_OF_ROWS = 2;		// Number of rows in the LCD
 
 void LcdDisplayInitialization();
 void LcdDisplayLineSensorArray(unsigned char text[]);
-void LcdDisplayNumber(float value, int row);
-void LcdDisplayNumber(char value[], int row);
+void LcdDisplayText(char value[]);
+void LcdDisplayText(char value1[], float value2);
+void LcdDisplayText(float value1, char value2[]);
+void LcdDisplayText(char value1[], char value2[]);
+void LcdDisplayText(char value1[], float value2, float value3);

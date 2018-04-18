@@ -8,84 +8,143 @@
 #include "LcdDisplay.h"
 #include "LineFollower.h"
 #include "StepperControl.h"
-#include <Wire.h>
+#include "IR_Sensor.h"
 #include "elapsedMillis.h"
+#include <Wire.h>
 
+bool isOnStartingLine = true;
 bool isLineLost = false;
 elapsedMillis elapsedTime;
 LineDetectionStructure lineDetectionStruct;
 
-void setup() 
+void setup()
 {
 	// Initialize devices and motors
 	LcdDisplayInitialization();
 	LineFollowerInitialization();
 	StepperInitialization();
-	
+
 	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
 	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+
+	// Pulley DC Motor Control - TODO
+	//pinMode(32, OUTPUT);
+	//digitalWrite(32, HIGH);
+	//pinMode(33, OUTPUT);
+	//digitalWrite(33, LOW);
 }
 
 
 void loop()
 {
+	// Process Line-Reader Input
 	lineDetectionStruct = ProcessLineFollowerInput();
 
-	float voltageIR = analogRead(LEFT_IR_SENSOR_PIN);
-	float dist = -0.2054*voltageIR + 111.5;
-	//LcdDisplayNumber(dist,0);
+	// Process X and Y IR Sensors
+	float analogIRY = analogRead(IR_Y_SENSOR_PIN);
+	float analogIRX = analogRead(IR_X_SENSOR_PIN);
+	float distance_Y = CalculateDistanceFromAnalogInput(analogIRY);
+	float distance_X = CalculateDistanceFromAnalogInput(analogIRX);
 	delay(50);
 
-
-	LineFollowingMoveRight();
-	if (dist < 25)
+	if (isOnStartingLine)
 	{
-		StopMovement();
+		// Perform Line Following on Starting Path
+		StartPathFollowing();
 	}
 	else
 	{
-		if (lineDetectionStruct.Sensor3LineDetected || lineDetectionStruct.Sensor4LineDetected)
+		// Perform Line Following around Main Circle
+		LineFollowing(distance_X, distance_Y);
+	}
+}
+
+void StartPathFollowing()
+{
+	if (lineDetectionStruct.Sensor2LineDetected
+		&& lineDetectionStruct.Sensor3LineDetected
+		&& lineDetectionStruct.Sensor4LineDetected
+		&& lineDetectionStruct.Sensor5LineDetected
+		&& lineDetectionStruct.Sensor6LineDetected)
+	{
+		// Circle Reached - perform 90 degree CCW Rotation
+		LcdDisplayText("START PATH", "Rotate 90 degrees");
+		Rotate90CCW();
+		isOnStartingLine = false;
+	}
+	else if (lineDetectionStruct.Sensor1LineDetected
+		|| lineDetectionStruct.Sensor2LineDetected)
+	{
+		LcdDisplayText("START PATH", "MOVE RIGHT");
+		LineFollowingMoveRight();
+	}
+	else if (lineDetectionStruct.Sensor6LineDetected
+		|| lineDetectionStruct.Sensor7LineDetected)
+	{
+		LcdDisplayText("START PATH", "MOVE LEFT");
+		LineFollowingMoveLeft();
+	}
+	else
+	{
+		LcdDisplayText("START PATH", "MOVE STRAIGHT");
+		LineFollowingMoveStraight();
+	}
+}
+
+void LineFollowing(float objectDistanceX, float objectDistanceY)
+{
+	if (objectDistanceX < 25.0 || objectDistanceY < 25.0)
+	{
+		StopMovement();
+		LcdDisplayText("OBJECT DETECTED", objectDistanceX, objectDistanceY);
+	}
+	else
+	{
+		if (lineDetectionStruct.Sensor2LineDetected
+			|| lineDetectionStruct.Sensor3LineDetected
+			|| lineDetectionStruct.Sensor4LineDetected
+			|| lineDetectionStruct.Sensor5LineDetected)
 		{
 			// Tracking Black Line
 			LineFollowingMoveCW();
-			LcdDisplayNumber("Moving CW", 0);
+			LcdDisplayText("Moving CW", objectDistanceX, objectDistanceY);
 			isLineLost = false;
 		}
-		else if (lineDetectionStruct.Sensor2LineDetected)
+		else if (lineDetectionStruct.Sensor1LineDetected)
 		{
 			// Off to the Left - Move Right
 			LineFollowingMoveRight();
-			LcdDisplayNumber("Moving RIGHT", 0);
+			LcdDisplayText("Moving RIGHT", objectDistanceX, objectDistanceY);
 			isLineLost = false;
 		}
-		else if (lineDetectionStruct.Sensor0LineDetected || lineDetectionStruct.Sensor1LineDetected)
+		else if (lineDetectionStruct.Sensor0LineDetected)
 		{
 			// Off to the Far Left - Move Far Right
 			LineFollowingMoveFarRight();
-			LcdDisplayNumber("Moving FAR RIGHT", 0);
+			LcdDisplayText("Moving FAR RIGHT", objectDistanceX, objectDistanceY);
 			isLineLost = false;
 		}
-		else if (lineDetectionStruct.Sensor5LineDetected)
+		else if (lineDetectionStruct.Sensor6LineDetected)
 		{
 			// Off to the Right - Move Left
 			LineFollowingMoveLeft();
-			LcdDisplayNumber("Moving LEFT", 0);
+			LcdDisplayText("Moving LEFT", objectDistanceX, objectDistanceY);
 			isLineLost = false;
 		}
-		else if (lineDetectionStruct.Sensor6LineDetected || lineDetectionStruct.Sensor7LineDetected)
+		else if (lineDetectionStruct.Sensor7LineDetected)
 		{
 			// Off to the Far Right - Move Far Left
 			LineFollowingMoveFarLeft();
-			LcdDisplayNumber("Moving FAR LEFT", 0);
+			LcdDisplayText("Moving FAR LEFT", objectDistanceX, objectDistanceY);
 			isLineLost = false;
 		}
-		else if (!lineDetectionStruct.Sensor1LineDetected &&
-			!lineDetectionStruct.Sensor2LineDetected &&
-			!lineDetectionStruct.Sensor3LineDetected &&
-			!lineDetectionStruct.Sensor4LineDetected &&
-			!lineDetectionStruct.Sensor5LineDetected &&
-			!lineDetectionStruct.Sensor6LineDetected &&
-			!lineDetectionStruct.Sensor7LineDetected)
+		else if (!lineDetectionStruct.Sensor1LineDetected
+			&& !lineDetectionStruct.Sensor2LineDetected
+			&& !lineDetectionStruct.Sensor3LineDetected
+			&& !lineDetectionStruct.Sensor4LineDetected
+			&& !lineDetectionStruct.Sensor5LineDetected
+			&& !lineDetectionStruct.Sensor6LineDetected
+			&& !lineDetectionStruct.Sensor7LineDetected)
 		{
 			if (isLineLost == false)
 			{
@@ -95,13 +154,13 @@ void loop()
 			else if (elapsedTime > 250)
 			{
 				SlowMovement();
-				LcdDisplayNumber("SLOW MOVE", 0);
+				LcdDisplayText("SLOW MOVE", objectDistanceX, objectDistanceY);
 			}
 			else if (elapsedTime > 500)
 			{
 				// Line lost - stop movement
 				StopMovement();
-				LcdDisplayNumber("STOP MOVE", 0);
+				LcdDisplayText("STOP MOVE", objectDistanceX, objectDistanceY);
 			}
 
 			isLineLost = true;
@@ -109,10 +168,9 @@ void loop()
 		else
 		{
 			SlowMovement();
-			LcdDisplayNumber("SLOW MOVE", 0);
+			LcdDisplayText("SLOW MOVE", objectDistanceX, objectDistanceY);
 			isLineLost = false;
 		}
 	}
 }
-
 

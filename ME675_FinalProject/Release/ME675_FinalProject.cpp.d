@@ -19,5 +19,6 @@ C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Rele
  C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\StepperControl.h \
  C:\Users\Jon\Documents\Arduino\libraries\AMIS30543/AMIS30543.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\libraries\SPI\src/SPI.h \
+ C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\IR_Sensor.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\libraries\Wire\src/Wire.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino/Stream.h

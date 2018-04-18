@@ -55,13 +55,11 @@ void LineFollowingMoveStraight()
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
-	//_step(RIGHT_STEPPER_STEP_PIN);
 	delay(1);
 
 	// Step the left motor
 	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
-	//_step(LEFT_STEPPER_STEP_PIN);
 	delay(1);
 }
 
@@ -72,13 +70,11 @@ void LineFollowingMoveCW()
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
-	//_step(RIGHT_STEPPER_STEP_PIN);
 	delay(1);
 
 	// Step the left motor
 	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
-	//_step(LEFT_STEPPER_STEP_PIN);
 	delay(1);
 }
 
@@ -89,13 +85,11 @@ void LineFollowingMoveRight()
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
-	//_step(RIGHT_STEPPER_STEP_PIN);
 	delay(1);
 
 	// Step the left motor
 	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
-	//_step(LEFT_STEPPER_STEP_PIN);
 	delay(1);
 }
 
@@ -106,13 +100,11 @@ void LineFollowingMoveFarRight()
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
-	//_step(RIGHT_STEPPER_STEP_PIN);
 	delay(1);
 
 	// Step the left motor
 	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
-	//_step(LEFT_STEPPER_STEP_PIN);
 	delay(1);
 }
 
@@ -123,13 +115,11 @@ void LineFollowingMoveLeft()
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
-	//_step(RIGHT_STEPPER_STEP_PIN);
 	delay(1);
 
 	// Step the left motor
 	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
-	//_step(LEFT_STEPPER_STEP_PIN);
 	delay(1);
 }
 
@@ -140,13 +130,11 @@ void LineFollowingMoveFarLeft()
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
-	//_step(RIGHT_STEPPER_STEP_PIN);
 	delay(1);
 
 	// Step the left motor
 	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
-	//_step(LEFT_STEPPER_STEP_PIN);
 	delay(1);
 }
 
@@ -157,13 +145,11 @@ void SlowMovement()
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
-	//_step(RIGHT_STEPPER_STEP_PIN);
 	delay(1);
 
 	// Step the left motor
 	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
-	//_step(LEFT_STEPPER_STEP_PIN);
 	delay(1);
 }
 
@@ -173,22 +159,25 @@ void StopMovement()
 	analogWrite(LEFT_STEPPER_STEP_PIN, 0);
 }
 
-// Sends a pulse on the NXT/STEP pin to tell the driver to take
-// one step, and also delays to control the speed of the motor.
-void _step(uint8_t stepPin)
+void Rotate90CCW()
 {
-	// The NXT/STEP minimum high pulse width is 2 microseconds.
-	digitalWrite(stepPin, HIGH);
-	delayMicroseconds(STEP_PULSE_WIDTH);
-	digitalWrite(stepPin, LOW);
-	delayMicroseconds(STEP_PULSE_WIDTH);
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < 2500)
+	{
+		analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
+		analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+		// Step the right motor
+		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
 
-	// The delay here controls the stepper motor's speed.  You can
-	// increase the delay to make the stepper motor go slower.  If
-	// you decrease the delay, the stepper motor will go fast, but
-	// there is a limit to how fast it can go before it starts
-	// missing steps.
-	delayMicroseconds(POST_STEP_DELAY_MICROSEC);
+		// Step the left motor
+		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(LEFT_STEPPER_DIR_PIN, !LEFT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+	}
+
+	SlowMovement();
 }
 
 // Writes a high or low value to the direction pin to specify

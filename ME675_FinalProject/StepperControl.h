@@ -26,6 +26,6 @@ void LineFollowingMoveLeft();
 void LineFollowingMoveFarLeft();
 void SlowMovement();
 void StopMovement();
-void _step(uint8_t stepPin);
+void Rotate90CCW();
 void _setDirection(uint8_t dirPin, bool dir);
 void _setStepping(uint8_t stepPin, AMIS30543::stepMode stepSize);

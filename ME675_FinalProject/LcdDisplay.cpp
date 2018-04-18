@@ -32,16 +32,49 @@ void LcdDisplayLineSensorArray(unsigned char text[])
 	lcd.print(text[14]);
 }
 
-void LcdDisplayNumber(float value, int row)
+void LcdDisplayText(char value[])
 {
 	lcd.clear();
-	lcd.setCursor(0, row);
+	lcd.setCursor(0, 0);
 	lcd.print(value);
 }
 
-void LcdDisplayNumber(char value[], int row)
+void LcdDisplayText(char value1[], float value2)
 {
 	lcd.clear();
-	lcd.setCursor(0, row);
-	lcd.print(value);
+	lcd.setCursor(0, 0);
+	lcd.print(value1);
+	lcd.setCursor(0, 1);
+	lcd.print(value2);
+}
+
+void LcdDisplayText(float value1, char value2[])
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print(value1);
+	lcd.setCursor(0, 1);
+	lcd.print(value2);
+}
+
+void LcdDisplayText(char value1[], char value2[])
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print(value1);
+	lcd.setCursor(0, 1);
+	lcd.print(value2);
+}
+
+void LcdDisplayText(char value1[], float value2, float value3)
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print(value1);
+	lcd.setCursor(0, 1);
+	lcd.print(value2);
+	lcd.setCursor(7, 1);
+	lcd.print(" ");
+	lcd.setCursor(8, 1);
+	lcd.print(value3);
 }
