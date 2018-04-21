@@ -10,7 +10,19 @@
     <ClCompile Include="StepperControl.cpp">
       <Filter>sources</Filter>
     </ClCompile>
-    <ClCompile Include="IR_Sensor.cpp">
+    <ClCompile Include="RGB_Sensor.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FiniteStateMachine.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ProximitySensors.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PulleyMotorControl.cpp">
       <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -30,6 +42,21 @@
     <ClInclude Include="__vm\.ME675_FinalProject.vsarduino.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="RGB_Sensor.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="FiniteStateMachine.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ProximitySensors.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="PulleyMotorControl.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="headers">
@@ -38,13 +65,8 @@
     <Filter Include="sources">
       <UniqueIdentifier>{28566f52-3ffd-4707-b163-58ef8114b2c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="main">
-      <UniqueIdentifier>{e43750d1-86ad-4a3c-a01b-a3e9196128ad}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ME675_FinalProject.ino">
-      <Filter>main</Filter>
-    </None>
+    <None Include="ME675_FinalProject.ino" />
   </ItemGroup>
 </Project>

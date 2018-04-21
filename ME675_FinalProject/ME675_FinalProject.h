@@ -1,11 +1,11 @@
 #pragma once
 #include <stdint.h>
-#include <elapsedMillis.h>
+#include "LineFollower.h"
 
-const uint8_t IR_Y_SENSOR_PIN = A0;
-const uint8_t IR_X_SENSOR_PIN = A1;
+const uint8_t RAISE_PULLEY_PIN = 22;
+const uint8_t LOWER_PULLEY_PIN = 23;
+const uint8_t POWER_MAGNET_PIN = 24;
 
-extern elapsedMillis elapsedTime;
-
-void StartPathFollowing();
-void LineFollowing(float objectDistanceX, float objectDistanceY);
+void FiniteStateMachineProcess();
+void StartPathFollowing(LineDetectionStructure lineDetectionStruct);
+void LineFollowing(LineDetectionStructure lineDetectionStruct, float objectDistanceX, float objectDistanceY);

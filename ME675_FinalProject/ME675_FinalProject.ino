@@ -8,14 +8,13 @@
 #include "LcdDisplay.h"
 #include "LineFollower.h"
 #include "StepperControl.h"
-#include "IR_Sensor.h"
+#include "ProximitySensors.h"
+#include "RGB_Sensor.h"
 #include "elapsedMillis.h"
-#include <Wire.h>
 
 bool isOnStartingLine = true;
 bool isLineLost = false;
 elapsedMillis elapsedTime;
-LineDetectionStructure lineDetectionStruct;
 
 void setup()
 {
@@ -23,43 +22,45 @@ void setup()
 	LcdDisplayInitialization();
 	LineFollowerInitialization();
 	StepperInitialization();
+	RGBsensorInitialization();
+	InitializeProximitySensors();
 
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
-
-	// Pulley DC Motor Control - TODO
-	//pinMode(32, OUTPUT);
-	//digitalWrite(32, HIGH);
-	//pinMode(33, OUTPUT);
-	//digitalWrite(33, LOW);
+	Serial.begin(9600);
 }
 
 
 void loop()
 {
+	//FiniteStateMachineProcess();
+
+}
+
+void FiniteStateMachineProcess()
+{
 	// Process Line-Reader Input
-	lineDetectionStruct = ProcessLineFollowerInput();
+	LineDetectionStructure lineDetectionStruct = ProcessLineFollowerInput();
+
+	// Process RGB Input
+	RGBreadingStructure rgbInput = RGBreadColor();
 
 	// Process X and Y IR Sensors
-	float analogIRY = analogRead(IR_Y_SENSOR_PIN);
-	float analogIRX = analogRead(IR_X_SENSOR_PIN);
-	float distance_Y = CalculateDistanceFromAnalogInput(analogIRY);
-	float distance_X = CalculateDistanceFromAnalogInput(analogIRX);
+	float distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+	float distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
 	delay(50);
 
 	if (isOnStartingLine)
 	{
-		// Perform Line Following on Starting Path
-		StartPathFollowing();
+		// STATE 1: Perform Line Following on Starting Path
+		StartPathFollowing(lineDetectionStruct);
 	}
 	else
 	{
-		// Perform Line Following around Main Circle
-		LineFollowing(distance_X, distance_Y);
+		// STATE 2: Perform Line Following around Main Circle
+		LineFollowing(lineDetectionStruct, distance_X, distance_Y);
 	}
 }
 
-void StartPathFollowing()
+void StartPathFollowing(LineDetectionStructure lineDetectionStruct)
 {
 	if (lineDetectionStruct.Sensor2LineDetected
 		&& lineDetectionStruct.Sensor3LineDetected
@@ -91,7 +92,7 @@ void StartPathFollowing()
 	}
 }
 
-void LineFollowing(float objectDistanceX, float objectDistanceY)
+void LineFollowing(LineDetectionStructure lineDetectionStruct, float objectDistanceX, float objectDistanceY)
 {
 	if (objectDistanceX < 25.0 || objectDistanceY < 25.0)
 	{

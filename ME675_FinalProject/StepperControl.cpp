@@ -53,12 +53,12 @@ void LineFollowingMoveStraight()
 	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
 	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
@@ -83,12 +83,12 @@ void LineFollowingMoveRight()
 	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
 	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
@@ -98,12 +98,12 @@ void LineFollowingMoveFarRight()
 	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
 	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
@@ -113,12 +113,12 @@ void LineFollowingMoveLeft()
 	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
 	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
@@ -128,12 +128,12 @@ void LineFollowingMoveFarLeft()
 	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
 	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
@@ -162,7 +162,7 @@ void StopMovement()
 void Rotate90CCW()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < 2500)
+	while (millis() - currentTime < 2000)
 	{
 		analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
 		analogWrite(LEFT_STEPPER_STEP_PIN, 250);
