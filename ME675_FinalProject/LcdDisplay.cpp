@@ -1,5 +1,5 @@
-#include "ME675_FinalProject.h" 
 #include "LcdDisplay.h"
+#include "LineFollower.h"
 #include <LiquidCrystal.h>
 #include <Arduino.h>
 
@@ -30,6 +30,29 @@ void LcdDisplayLineSensorArray(unsigned char text[])
 	lcd.print(text[12]);
 	lcd.setCursor(12, 1);
 	lcd.print(text[14]);
+}
+
+void LcdDisplayLineSensors(LineDetectionStructure lineStruct)
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print(lineStruct.Sensor0LineDetected);
+	lcd.setCursor(4, 0);
+	lcd.print(lineStruct.Sensor1LineDetected);
+	lcd.setCursor(8, 0);
+	lcd.print(lineStruct.Sensor2LineDetected);
+	lcd.setCursor(12, 0);
+	lcd.print(lineStruct.Sensor3LineDetected);
+
+	lcd.setCursor(0, 1);
+	lcd.print(lineStruct.Sensor4LineDetected);
+	lcd.setCursor(4, 1);
+	lcd.print(lineStruct.Sensor5LineDetected);
+	lcd.setCursor(8, 1);
+	lcd.print(lineStruct.Sensor6LineDetected);
+	lcd.setCursor(12, 1);
+	lcd.print(lineStruct.Sensor7LineDetected);
+
 }
 
 void LcdDisplayText(char value[])

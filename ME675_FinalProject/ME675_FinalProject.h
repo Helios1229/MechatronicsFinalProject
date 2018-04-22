@@ -1,7 +1,14 @@
 #pragma once
 #include <stdint.h>
-#include "LineFollower.h"
 
-void FiniteStateMachineProcess();
-void StartPathFollowing(LineDetectionStructure lineDetectionStruct);
-void LineFollowing(LineDetectionStructure lineDetectionStruct);
+const int LINE_LOST_SLOW_TIMEOUT = 500;		// Timeout period in milliseconds to start slow movement
+const int LINE_LOST_STOP_TIMEOUT = 2500;	// Timeout period in milliseconds to stop movement
+
+enum StartLineFollowingAdjustment { START_LEFT, START_STRAIGHT, START_RIGHT, ROTATE };
+enum CircleLineFollowingAdjustment { FAR_LEFT, LEFT, NORMAL_CW, RIGHT, FAR_RIGHT, LOST };
+
+void _finiteStateMachineProcess();
+StartLineFollowingAdjustment _adjustStartLineFollowingMovement();
+int _startLineChangeState(StartLineFollowingAdjustment adjustment);
+CircleLineFollowingAdjustment _adjustCircleLineFollowingMovement();
+int _circleLineChangeState(CircleLineFollowingAdjustment adjustment);

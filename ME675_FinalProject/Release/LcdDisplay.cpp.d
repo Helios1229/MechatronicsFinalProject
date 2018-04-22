@@ -1,8 +1,7 @@
 C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\LcdDisplay.cpp.o: \
  C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\LcdDisplay.cpp \
- C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\ME675_FinalProject.h \
- C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\LineFollower.h \
  C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\LcdDisplay.h \
+ C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\LineFollower.h \
  C:\Program\ Files\ (x86)\Arduino\libraries\LiquidCrystal/LiquidCrystal.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino/Print.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino/WString.h \

@@ -47,10 +47,26 @@ void StepperInitialization()
 	leftStepperMotor.enableDriver();
 }
 
-void LineFollowingMoveStraight()
+void MoveToStartLine()
 {
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+
+	delay(START_MOVEMENT_PERIOD);
+}
+
+void StartLineFollowingMoveStraight()
+{
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -64,8 +80,8 @@ void LineFollowingMoveStraight()
 
 void LineFollowingMoveCW()
 {
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -79,8 +95,8 @@ void LineFollowingMoveCW()
 
 void LineFollowingMoveRight()
 {
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -94,8 +110,8 @@ void LineFollowingMoveRight()
 
 void LineFollowingMoveFarRight()
 {
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -109,8 +125,8 @@ void LineFollowingMoveFarRight()
 
 void LineFollowingMoveLeft()
 {
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -124,8 +140,8 @@ void LineFollowingMoveLeft()
 
 void LineFollowingMoveFarLeft()
 {
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -139,8 +155,8 @@ void LineFollowingMoveFarLeft()
 
 void LineFollowingSlowMovement()
 {
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -154,8 +170,8 @@ void LineFollowingSlowMovement()
 
 void BallLocateSlowMovement()
 {
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -172,8 +188,8 @@ void BallPickupRotation()
 	unsigned long currentTime = millis();
 	while (millis() - currentTime < 1500)
 	{
-		analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-		analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 		// Step the right motor
 		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 		_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -186,11 +202,28 @@ void BallPickupRotation()
 	}
 }
 
-
 void StopMovement()
 {
-	analogWrite(RIGHT_STEPPER_STEP_PIN, 0);
-	analogWrite(LEFT_STEPPER_STEP_PIN, 0);
+	_setPWM(0);
+}
+
+void Rotate90CW()
+{
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < 2000)
+	{
+		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+		// Step the right motor
+		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+
+		// Step the left motor
+		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+	}
 }
 
 void Rotate90CCW()
@@ -198,8 +231,8 @@ void Rotate90CCW()
 	unsigned long currentTime = millis();
 	while (millis() - currentTime < 2000)
 	{
-		analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
-		analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
 		// Step the right motor
 		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 		_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
@@ -247,4 +280,10 @@ void _setStepping(uint8_t stepPin, AMIS30543::stepMode stepSize)
 		// Error - Invalid Pin
 		break;
 	}
+}
+
+void _setPWM(int pwmDutyCycle)
+{
+	analogWrite(RIGHT_STEPPER_STEP_PIN, pwmDutyCycle);
+	analogWrite(LEFT_STEPPER_STEP_PIN, pwmDutyCycle);
 }
