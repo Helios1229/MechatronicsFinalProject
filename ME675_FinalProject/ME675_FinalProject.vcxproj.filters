@@ -22,7 +22,7 @@
     <ClCompile Include="Utilities.cpp">
       <Filter>sources</Filter>
     </ClCompile>
-    <ClCompile Include="PulleyMotorControl.cpp">
+    <ClCompile Include="PulleyControl.cpp">
       <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -54,7 +54,7 @@
     <ClInclude Include="Utilities.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="PulleyMotorControl.h">
+    <ClInclude Include="PulleyControl.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

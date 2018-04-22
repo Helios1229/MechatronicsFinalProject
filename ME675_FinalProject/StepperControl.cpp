@@ -2,7 +2,6 @@
 #include "StepperControl.h"
 #include <AMIS30543.h>
 #include <SPI.h>
-#include <AccelStepper.h>
 
 
 static AMIS30543::stepMode selectedRightStepperStepSize = DEFAULT_STEP_SIZE;
@@ -45,7 +44,7 @@ void StepperInitialization()
 
 	// Enable the motor outputs.
 	rightStepperMotor.enableDriver();
-	leftStepperMotor.enableDriver(); 
+	leftStepperMotor.enableDriver();
 }
 
 void LineFollowingMoveStraight()
@@ -53,12 +52,12 @@ void LineFollowingMoveStraight()
 	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
 	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
@@ -138,7 +137,22 @@ void LineFollowingMoveFarLeft()
 	delay(1);
 }
 
-void SlowMovement()
+void LineFollowingSlowMovement()
+{
+	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
+	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+}
+
+void BallLocateSlowMovement()
 {
 	analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
 	analogWrite(LEFT_STEPPER_STEP_PIN, 250);
@@ -152,6 +166,26 @@ void SlowMovement()
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
+
+void BallPickupRotation()
+{
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < 1500)
+	{
+		analogWrite(RIGHT_STEPPER_STEP_PIN, 250);
+		analogWrite(LEFT_STEPPER_STEP_PIN, 250);
+		// Step the right motor
+		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+		_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+
+		// Step the left motor
+		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+		_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+	}
+}
+
 
 void StopMovement()
 {
@@ -176,8 +210,6 @@ void Rotate90CCW()
 		_setDirection(LEFT_STEPPER_DIR_PIN, !LEFT_STEPPER_FORWARD_DIRECTION);
 		delay(1);
 	}
-
-	SlowMovement();
 }
 
 // Writes a high or low value to the direction pin to specify

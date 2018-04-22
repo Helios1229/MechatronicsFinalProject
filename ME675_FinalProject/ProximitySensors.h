@@ -16,10 +16,10 @@ const double LONG_RANGE_POWER = -1.378;
 const int SHORT_RANGE_INVALID_DISTANCE = 0;
 const int SHORT_RANGE_MAX_DISTANCE = 15;
 const int OBJECT_DETECTION_SAMPLE_PERIOD = 25;
-const int HOLSTER_LIFTED_THRESHOLD = 1000;
+const int HOLSTER_LIFTED_THRESHOLD = 1150;
 
-enum SharpSensorModel {GP2Y0A51SK0F, GP2Y0A60SZLF};
-enum DirectionOfIR {X,Y};
+enum SharpSensorModel { GP2Y0A51SK0F, GP2Y0A60SZLF };
+enum DirectionOfIR { X, Y };
 
 void InitializeProximitySensors();
 int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction = DirectionOfIR::X);

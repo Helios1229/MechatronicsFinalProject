@@ -17,36 +17,36 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 
 	switch (sensorType)
 	{
-		case SharpSensorModel::GP2Y0A51SK0F:
+	case SharpSensorModel::GP2Y0A51SK0F:
+	{
+		double analogCloseRangeIR = analogRead(IR_CLOSE_RANGE_SENSOR_PIN);
+		voltage = ConvertAnalogInToVoltage(analogCloseRangeIR);
+		distance = SHORT_RANGE_MULTIPLIER * pow(voltage, SHORT_RANGE_POWER);
+
+		// If the measured distance is outside the measurement range, set equal to INVALID
+		if (distance > SHORT_RANGE_MAX_DISTANCE) { distance = SHORT_RANGE_INVALID_DISTANCE; }
+		break;
+	}
+	case SharpSensorModel::GP2Y0A60SZLF:
+	{
+		switch (direction)
 		{
-			double analogCloseRangeIR = analogRead(IR_CLOSE_RANGE_SENSOR_PIN);
-			voltage = ConvertAnalogInToVoltage(analogCloseRangeIR);
-			distance = SHORT_RANGE_MULTIPLIER *pow(voltage, SHORT_RANGE_POWER);
-			
-			// If the measured distance is outside the measurement range, set equal to INVALID
-			if (distance > SHORT_RANGE_MAX_DISTANCE) { distance = SHORT_RANGE_INVALID_DISTANCE; }
+		case DirectionOfIR::X:
+		{
+			double analogLongRangeXIR = analogRead(IR_X_SENSOR_PIN);
+			voltage = ConvertAnalogInToVoltage(analogLongRangeXIR);
+			distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
 			break;
 		}
-		case SharpSensorModel::GP2Y0A60SZLF:
+		case DirectionOfIR::Y:
 		{
-			switch (direction)
-			{
-				case DirectionOfIR::X:
-				{
-					double analogLongRangeXIR = analogRead(IR_X_SENSOR_PIN);
-					voltage = ConvertAnalogInToVoltage(analogLongRangeXIR);
-					distance = LONG_RANGE_MULTIPLIER *pow(voltage, LONG_RANGE_POWER);
-					break;
-				}
-				case DirectionOfIR::Y:
-				{
-					double analogLongRangeYIR = analogRead(IR_Y_SENSOR_PIN);
-					voltage = ConvertAnalogInToVoltage(analogLongRangeYIR);
-					distance = LONG_RANGE_MULTIPLIER *pow(voltage, LONG_RANGE_POWER);
-					break;
-				}
-			}
+			double analogLongRangeYIR = analogRead(IR_Y_SENSOR_PIN);
+			voltage = ConvertAnalogInToVoltage(analogLongRangeYIR);
+			distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
+			break;
 		}
+		}
+	}
 	}
 
 	return distance;
@@ -82,4 +82,3 @@ bool IsBearingHolsterPresent()
 	if (detectionCounts > HOLSTER_LIFTED_THRESHOLD) { isHolsterLifted = true; }
 	return isHolsterLifted;
 }
-
