@@ -86,7 +86,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FiniteStateMachine.h" />
     <ClInclude Include="ProximitySensors.h" />
     <ClInclude Include="LcdDisplay.h" />
     <ClInclude Include="LineFollower.h" />
@@ -98,7 +97,6 @@
     <ClInclude Include="__vm\.ME675_FinalProject.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FiniteStateMachine.cpp" />
     <ClCompile Include="ProximitySensors.cpp" />
     <ClCompile Include="LcdDisplay.cpp" />
     <ClCompile Include="LineFollower.cpp" />

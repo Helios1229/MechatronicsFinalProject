@@ -13,9 +13,6 @@
     <ClCompile Include="RGB_Sensor.cpp">
       <Filter>sources</Filter>
     </ClCompile>
-    <ClCompile Include="FiniteStateMachine.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="ProximitySensors.cpp">
       <Filter>sources</Filter>
     </ClCompile>
@@ -43,9 +40,6 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="RGB_Sensor.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="FiniteStateMachine.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="ProximitySensors.h">

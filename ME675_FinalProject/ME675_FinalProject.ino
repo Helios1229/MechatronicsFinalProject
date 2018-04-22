@@ -39,7 +39,8 @@ const int STATE_3H = 1038;		// Recover line path
 // BALL-BEARING DETECTION AND PICKUP
 const int STATE_4 = 1040;		// Ball detected in X-Direction, Rotate until detected in Y-Direction
 const int STATE_5 = 1050;		// Ball detected in Y-Direction, Move towards it
-const int STATE_6 = 1060;		// Ball at threshold distance, Rotate CW to align-middle
+const int STATE_6A = 1061;		// Ball at Long-Range IR threshold distance, move forward slightly to bring into range of Close-Range IR
+const int STATE_6B = 1062;		// Ball at Close-Range IR threshold distance, Rotate CW to align-middle
 const int STATE_7 = 1070;		// Move toward ball to align under EM
 const int STATE_8 = 1080;		// Ball at threshold distance, lower pulley
 const int STATE_9 = 1090;		// Turn on EM and wait small delay
@@ -49,7 +50,8 @@ const int STATE_11 = 1110;		// TBD!!
 
 int currentFsmState = STATE_0;	// Begin at initial starting state
 bool isLineLost = false;		
-long lineLostTimer;
+bool isMagnetPoweringOn = false;
+long lineLostTimer, magnetPoweringOnTimer;
 
 
 void setup()
@@ -62,13 +64,16 @@ void setup()
 	InitializeProximitySensors();
 	InitializePulleyMotorControl();
 
-	//Serial.begin(9600);
+	Serial.begin(9600);
 }
 
 
 void loop()
 {
-	_finiteStateMachineProcess();
+	int distance = CalculateIRDistance(SharpSensorModel::GP2Y0A51SK0F);
+	Serial.println(distance);
+	delay(25);
+	//_finiteStateMachineProcess();
 }
 
 
@@ -263,7 +268,7 @@ void _finiteStateMachineProcess()
 
 		case (STATE_4):		// Ball detected in X-Direction, Rotate 90 degrees CW
 		{
-			LcdDisplayText("STATE_4", "BALL DETECT X");
+			LcdDisplayText("STATE_4", "BALL DETECT IN X");
 
 			// Rotate slowly CW until ball is detected in the Y-Direction
 			RotateSlowCW();
@@ -273,22 +278,30 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_5):		// Ball detected in Y-Direction, Move towards it
 		{
-			LcdDisplayText("STATE_5", "BALL DETECT Y");
+			LcdDisplayText("STATE_5", "BALL DETECT IN Y");
 
-			// Advance slowly toward ball until threshold is reached
-			BallLocateSlowMovement();
+			// Advance very slowly toward ball until threshold is reached
+			BallLocateVerySlowMovement();
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
-			if (distance_Y <= MIN_BALL_DETECTION_THRESHOLD) { currentFsmState = STATE_6; }
+			if (distance_Y <= MIN_BALL_DETECTION_THRESHOLD) { currentFsmState = STATE_6A; }
 			break;
 		}
-		case (STATE_6):		// Ball at threshold distance, Rotate CW to align-middle
+		case (STATE_6A):	// Ball at Long-Range IR threshold distance, move forward slightly to bring into range of Close-Range IR
 		{
-			LcdDisplayText("STATE_6", "BALL AT THRESH");
+			LcdDisplayText("STATE_6A", "ADJUST TO CLOSE");
+
+			// Move slightly past long-range IR threshold to position bearing into close-range IR detection
+			AdjustPositionIntoCloseRange();
+			currentFsmState = STATE_6B;
+			break;
+		}
+		case (STATE_6B):	// Ball at Close-Range IR threshold distance, Rotate CW to align-middle
+		{
+			LcdDisplayText("STATE_6B", "BALL AT CLOSE IR");
 
 			// Rotate slowly CW until ball is aligned with middle of robot
 			RotateSlowCW();
 			int distance_CR = CalculateIRDistance(SharpSensorModel::GP2Y0A51SK0F);
-			LcdDisplayText("STATE_6", distance_CR);
 			if ((distance_CR <= MAX_BALL_CLOSE_RANGE_THRESHOLD) && (distance_CR != SHORT_RANGE_INVALID_DISTANCE)) { currentFsmState = STATE_7; }
 			break;
 		}
@@ -297,9 +310,8 @@ void _finiteStateMachineProcess()
 			LcdDisplayText("STATE_7", "BALL ALIGNED");
 
 			// Move forward very slowly until ball is at pickup threshold
-			BallPickupVerySlowMovement();
+			BallLocateVerySlowMovement();
 			int distance_CR = CalculateIRDistance(SharpSensorModel::GP2Y0A51SK0F);
-			LcdDisplayText("STATE_7", distance_CR);
 			if ((distance_CR <= MIN_BALL_CLOSE_RANGE_THRESHOLD) && (distance_CR != SHORT_RANGE_INVALID_DISTANCE)) { currentFsmState = STATE_8; }
 			break;
 		}
@@ -315,17 +327,25 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_9):		// Turn on EM and wait small delay
 		{
-			LcdDisplayText("STATE_9", "TURNING ON EM");
+			LcdDisplayText("STATE_9", "TURNING ON MAG");
 
 			// Turn on Electromagnet
 			PowerOnMagnet();
-			delay(500);
-			currentFsmState = STATE_10;
+
+			// Start elapsed timer to ensure magnet has enough time to power on
+			if (isMagnetPoweringOn == false) { magnetPoweringOnTimer = millis(); }
+			if (millis() - magnetPoweringOnTimer > MAGNET_POWER_ON_DELAY)
+			{
+				currentFsmState = STATE_10;
+				isMagnetPoweringOn = false;
+			}
+
+			isMagnetPoweringOn = true;
 			break;
 		}
 		case (STATE_10):	// Raise pulley until threshold is reached
 		{
-			LcdDisplayText("STATE_9", "RAISING PULLEY");
+			LcdDisplayText("STATE_10", "RAISING PULLEY");
 
 			// Raise pulley until correct height is reached
 			RaisePulley();

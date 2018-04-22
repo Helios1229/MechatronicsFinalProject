@@ -6,7 +6,8 @@ const int LINE_LOST_STOP_TIMEOUT = 2500;		// Timeout period in milliseconds to s
 const int MAX_BALL_DETECTION_THRESHOLD = 35;	// Maximum distance to register a detected ball bearing
 const int MIN_BALL_DETECTION_THRESHOLD = 10;	// Minimum distance to advance towards a detected ball bearing
 const int MAX_BALL_CLOSE_RANGE_THRESHOLD = 15;	// Maximum distance to register a ball bearing with close range IR
-const int MIN_BALL_CLOSE_RANGE_THRESHOLD = 7;	// Minimum distance to start ball bearing pick-up process
+const int MIN_BALL_CLOSE_RANGE_THRESHOLD = 6;	// Minimum distance to start ball bearing pick-up process
+const int MAGNET_POWER_ON_DELAY = 250;			// Period in milliseconds to power on magnet and lift ball
 
 enum StartLineFollowingAdjustment { START_LEFT, START_STRAIGHT, START_RIGHT, ROTATE };
 enum CircleLineFollowingAdjustment { FAR_LEFT, LEFT, NORMAL_CW, RIGHT, FAR_RIGHT, LOST };
