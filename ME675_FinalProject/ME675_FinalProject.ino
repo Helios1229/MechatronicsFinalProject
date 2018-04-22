@@ -45,19 +45,12 @@ const int STATE_8 = 1080;		// Ball at threshold distance, lower pulley
 const int STATE_9 = 1090;		// Turn on EM and wait small delay
 const int STATE_10 = 1100;		// Raise pulley until threshold is reached
 
+const int STATE_11 = 1110;		// TBD!!
+
 int currentFsmState = STATE_0;	// Begin at initial starting state
 bool isLineLost = false;		
 long lineLostTimer;
 
-
-bool isOnStartingLine = true;
-
-bool isMovingToBall = false;
-bool isPickingUpBall = false;
-elapsedMillis elapsedTime;
-
-// TEST
-bool rotate = true;
 
 void setup()
 {
@@ -71,6 +64,7 @@ void setup()
 
 	//Serial.begin(9600);
 }
+
 
 void loop()
 {
@@ -271,26 +265,77 @@ void _finiteStateMachineProcess()
 		{
 			LcdDisplayText("STATE_4", "BALL DETECT X");
 
-			// Rotate slowly CCW until ball is detected in the Y-Direction
+			// Rotate slowly CW until ball is detected in the Y-Direction
 			RotateSlowCW();
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
-			if (distance_Y <= MAX_BALL_DETECTION_THRESHOLD)
-			{
-				currentFsmState = STATE_5;
-			}
+			if (distance_Y <= MAX_BALL_DETECTION_THRESHOLD)	{ currentFsmState = STATE_5; }
 			break;
 		}
 		case (STATE_5):		// Ball detected in Y-Direction, Move towards it
 		{
-			LcdDisplayText("STATE_4", "BALL DETECT Y");
+			LcdDisplayText("STATE_5", "BALL DETECT Y");
+
+			// Advance slowly toward ball until threshold is reached
 			BallLocateSlowMovement();
+			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+			if (distance_Y <= MIN_BALL_DETECTION_THRESHOLD) { currentFsmState = STATE_6; }
 			break;
 		}
+		case (STATE_6):		// Ball at threshold distance, Rotate CW to align-middle
+		{
+			LcdDisplayText("STATE_6", "BALL AT THRESH");
 
+			// Rotate slowly CW until ball is aligned with middle of robot
+			RotateSlowCW();
+			int distance_CR = CalculateIRDistance(SharpSensorModel::GP2Y0A51SK0F);
+			LcdDisplayText("STATE_6", distance_CR);
+			if ((distance_CR <= MAX_BALL_CLOSE_RANGE_THRESHOLD) && (distance_CR != SHORT_RANGE_INVALID_DISTANCE)) { currentFsmState = STATE_7; }
+			break;
+		}
+		case (STATE_7):		// Ball aligned with middle, advance slowly to pick-up threshold
+		{
+			LcdDisplayText("STATE_7", "BALL ALIGNED");
+
+			// Move forward very slowly until ball is at pickup threshold
+			BallPickupVerySlowMovement();
+			int distance_CR = CalculateIRDistance(SharpSensorModel::GP2Y0A51SK0F);
+			LcdDisplayText("STATE_7", distance_CR);
+			if ((distance_CR <= MIN_BALL_CLOSE_RANGE_THRESHOLD) && (distance_CR != SHORT_RANGE_INVALID_DISTANCE)) { currentFsmState = STATE_8; }
+			break;
+		}
+		case (STATE_8):		// Ball at threshold distance, lower pulley
+		{
+			LcdDisplayText("STATE_8", "LOWERING PULLEY");
+
+			// Stop movement and begin lowering pulley for specified time
+			StopMovement();
+			LowerPulley();
+			currentFsmState = STATE_9;
+			break;
+		}
+		case (STATE_9):		// Turn on EM and wait small delay
+		{
+			LcdDisplayText("STATE_9", "TURNING ON EM");
+
+			// Turn on Electromagnet
+			PowerOnMagnet();
+			delay(500);
+			currentFsmState = STATE_10;
+			break;
+		}
+		case (STATE_10):	// Raise pulley until threshold is reached
+		{
+			LcdDisplayText("STATE_9", "RAISING PULLEY");
+
+			// Raise pulley until correct height is reached
+			RaisePulley();
+			currentFsmState = STATE_11;
+			break;
+		}
 	}
 
 	// Loop Delay
-	delay(15);
+	delay(25);
 }
 
 StartLineFollowingAdjustment _adjustStartLineFollowingMovement()

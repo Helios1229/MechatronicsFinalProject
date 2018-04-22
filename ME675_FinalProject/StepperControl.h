@@ -29,7 +29,7 @@ void LineFollowingMoveLeft();
 void LineFollowingMoveFarLeft();
 void LineFollowingSlowMovement();
 void BallLocateSlowMovement();
-void BallPickupRotation();
+void BallPickupVerySlowMovement();
 void StopMovement();
 void Rotate90CW();
 void Rotate90CCW();
