@@ -37,7 +37,7 @@ const int STATE_3G = 1037;		// Line lost completely, Stop Movement
 const int STATE_3H = 1038;		// Recover line path
 
 // BALL-BEARING DETECTION AND PICKUP
-const int STATE_4 = 1040;		// Ball detected in X-Direction, Rotate 90 degrees CW
+const int STATE_4 = 1040;		// Ball detected in X-Direction, Rotate until detected in Y-Direction
 const int STATE_5 = 1050;		// Ball detected in Y-Direction, Move towards it
 const int STATE_6 = 1060;		// Ball at threshold distance, Rotate CW to align-middle
 const int STATE_7 = 1070;		// Move toward ball to align under EM
@@ -153,12 +153,15 @@ void _finiteStateMachineProcess()
 		{
 			LcdDisplayText("STATE_3A", "MOVE FAR LEFT");
 
+			// Scan playing field for ball bearings
+			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
+			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+
 			// Adjust movement to the right
 			LineFollowingMoveFarLeft();
 
-			// Determine Line Adjustment
-			CircleLineFollowingAdjustment adjustment = _adjustCircleLineFollowingMovement();
-			currentFsmState = _circleLineChangeState(adjustment);
+			// Determine new state
+			currentFsmState = _ballDetectionOrLineAdjustChangeState(distance_X, distance_Y);
 			isLineLost = false;
 			break;
 		}
@@ -166,12 +169,15 @@ void _finiteStateMachineProcess()
 		{
 			LcdDisplayText("STATE_3B", "MOVE LEFT");
 
+			// Scan playing field for ball bearings
+			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
+			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+
 			// Adjust movement to the right
 			LineFollowingMoveLeft();
 
-			// Determine Line Adjustment
-			CircleLineFollowingAdjustment adjustment = _adjustCircleLineFollowingMovement();
-			currentFsmState = _circleLineChangeState(adjustment);
+			// Determine new state
+			currentFsmState = _ballDetectionOrLineAdjustChangeState(distance_X, distance_Y);
 			isLineLost = false;
 			break;
 		}
@@ -179,12 +185,15 @@ void _finiteStateMachineProcess()
 		{
 			LcdDisplayText("STATE_3C", "MOVE NORMAL CW");
 
+			// Scan playing field for ball bearings
+			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
+			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+
 			// Adjust movement to the right
 			LineFollowingMoveCW();
 
-			// Determine Line Adjustment
-			CircleLineFollowingAdjustment adjustment = _adjustCircleLineFollowingMovement();
-			currentFsmState = _circleLineChangeState(adjustment);
+			// Determine new state
+			currentFsmState = _ballDetectionOrLineAdjustChangeState(distance_X, distance_Y);
 			isLineLost = false;
 			break;
 		}
@@ -192,12 +201,15 @@ void _finiteStateMachineProcess()
 		{
 			LcdDisplayText("STATE_3D", "MOVE RIGHT");
 
+			// Scan playing field for ball bearings
+			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
+			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+
 			// Adjust movement to the right
 			LineFollowingMoveRight();
 
-			// Determine Line Adjustment
-			CircleLineFollowingAdjustment adjustment = _adjustCircleLineFollowingMovement();
-			currentFsmState = _circleLineChangeState(adjustment);
+			// Determine new state
+			currentFsmState = _ballDetectionOrLineAdjustChangeState(distance_X, distance_Y);
 			isLineLost = false;
 			break;
 		}
@@ -205,12 +217,15 @@ void _finiteStateMachineProcess()
 		{
 			LcdDisplayText("STATE_3E", "MOVE FAR RIGHT");
 
+			// Scan playing field for ball bearings
+			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
+			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+
 			// Adjust movement to the right
 			LineFollowingMoveFarRight();
 
-			// Determine Line Adjustment
-			CircleLineFollowingAdjustment adjustment = _adjustCircleLineFollowingMovement();
-			currentFsmState = _circleLineChangeState(adjustment);
+			// Determine new state
+			currentFsmState = _ballDetectionOrLineAdjustChangeState(distance_X, distance_Y);
 			isLineLost = false;
 			break;
 		}
@@ -247,6 +262,31 @@ void _finiteStateMachineProcess()
 			// Stop Movement
 			StopMovement();
 		}
+
+		///////////////////////////////////////
+		// BALL-BEARING DETECTION AND PICKUP //
+		///////////////////////////////////////
+
+		case (STATE_4):		// Ball detected in X-Direction, Rotate 90 degrees CW
+		{
+			LcdDisplayText("STATE_4", "BALL DETECT X");
+
+			// Rotate slowly CCW until ball is detected in the Y-Direction
+			RotateSlowCW();
+			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+			if (distance_Y <= MAX_BALL_DETECTION_THRESHOLD)
+			{
+				currentFsmState = STATE_5;
+			}
+			break;
+		}
+		case (STATE_5):		// Ball detected in Y-Direction, Move towards it
+		{
+			LcdDisplayText("STATE_4", "BALL DETECT Y");
+			BallLocateSlowMovement();
+			break;
+		}
+
 	}
 
 	// Loop Delay
@@ -406,6 +446,29 @@ int _circleLineChangeState(CircleLineFollowingAdjustment adjustment)
 		}
 	}
 
+	return newState;
+}
+
+int _ballDetectionOrLineAdjustChangeState(int xDistanceDetection, int yDistanceDetection)
+{
+	int newState;
+	if (xDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD)
+	{
+		// Ball bearing detected to the side of robot
+		newState = STATE_4;
+	}
+	else if (yDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD)
+	{
+		// Ball bearing detected in front of robot
+		newState = STATE_5;
+	}
+	else
+	{
+		// Determine Line Adjustment
+		CircleLineFollowingAdjustment adjustment = _adjustCircleLineFollowingMovement();
+		newState = _circleLineChangeState(adjustment);
+	}
+	
 	return newState;
 }
 

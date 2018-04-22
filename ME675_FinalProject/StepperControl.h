@@ -33,6 +33,7 @@ void BallPickupRotation();
 void StopMovement();
 void Rotate90CW();
 void Rotate90CCW();
+void RotateSlowCW();
 void _setDirection(uint8_t dirPin, bool dir);
 void _setStepping(uint8_t stepPin, AMIS30543::stepMode stepSize);
 void _setPWM(int pwmDutyCycle);

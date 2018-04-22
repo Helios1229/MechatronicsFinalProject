@@ -245,6 +245,21 @@ void Rotate90CCW()
 	}
 }
 
+void RotateSlowCW()
+{
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+}
+
 // Writes a high or low value to the direction pin to specify
 // what direction to turn the motor.
 void _setDirection(uint8_t dirPin, bool dir)
