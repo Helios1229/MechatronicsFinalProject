@@ -24,6 +24,8 @@ const int STATE_0 = 1000;		// Moving from START position to START LINE
 const int STATE_1A = 1011;		// Following START LINE - Move Straight
 const int STATE_1B = 1012;		// Following START LINE - Move Right (CW)
 const int STATE_1C = 1013;		// Following START LINE - Move Left (CCW)
+const int STATE_1D = 1014;		// Lost START LINE - Slow Movement
+const int STATE_1E = 1015;		// Lost START LINE completely - Stop Movement
 const int STATE_2 = 1020;		// Perform 90 degree CCW Rotation
 
 // START CIRCLE-LINE FOLLOWING
@@ -51,7 +53,9 @@ const int STATE_11 = 1110;		// TBD!!
 int currentFsmState = STATE_0;	// Begin at initial starting state
 bool isLineLost = false;		
 bool isMagnetPoweringOn = false;
-long lineLostTimer, magnetPoweringOnTimer;
+bool isBallBeingDetectedInX = false;
+bool isBallBeingDetectedInY = false;
+long lineLostTimer, magnetPoweringOnTimer, ballDetectedInXTimer, ballDetectedInYTimer;
 
 
 void setup()
@@ -64,16 +68,15 @@ void setup()
 	InitializeProximitySensors();
 	InitializePulleyMotorControl();
 
-	Serial.begin(9600);
+	//Serial.begin(9600);
+
+	//currentFsmState = STATE_3C;
 }
 
 
 void loop()
 {
-	int distance = CalculateIRDistance(SharpSensorModel::GP2Y0A51SK0F);
-	Serial.println(distance);
-	delay(25);
-	//_finiteStateMachineProcess();
+	_finiteStateMachineProcess();
 }
 
 
@@ -102,6 +105,7 @@ void _finiteStateMachineProcess()
 			// Determine Line Adjustment and State Change
 			StartLineFollowingAdjustment adjustment = _adjustStartLineFollowingMovement();
 			currentFsmState = _startLineChangeState(adjustment);
+			isLineLost = false;
 			break;
 		}
 		case (STATE_1B):	// Following START LINE - Move Right (CW)
@@ -117,6 +121,7 @@ void _finiteStateMachineProcess()
 			// Determine Line Adjustment and State Change
 			StartLineFollowingAdjustment adjustment = _adjustStartLineFollowingMovement();
 			currentFsmState = _startLineChangeState(adjustment);
+			isLineLost = false;
 			break;
 		}
 		case (STATE_1C):	// Following START LINE - Move Left (CCW)
@@ -132,6 +137,41 @@ void _finiteStateMachineProcess()
 			// Determine Line Adjustment and State Change
 			StartLineFollowingAdjustment adjustment = _adjustStartLineFollowingMovement();
 			currentFsmState = _startLineChangeState(adjustment);
+			isLineLost = false;
+			break;
+		}
+		case (STATE_1D):
+		{
+			LcdDisplayText("STATE_1D", "START LOST SLOW");
+
+			// Start elapsed timer to ensure line is lost
+			if (isLineLost == false) { lineLostTimer = millis(); }
+
+			// Wait to begin lost-line mitigation until thresholds are reached
+			if ((millis() - lineLostTimer > LINE_LOST_SLOW_TIMEOUT) && (millis() - lineLostTimer < LINE_LOST_STOP_TIMEOUT))
+			{
+				// Line lost for greater than threshold - Adjust movement slower and straight
+				StartLineFollowingSlowMovement();
+
+				// Determine Line Adjustment
+				StartLineFollowingAdjustment adjustment = _adjustStartLineFollowingMovement();
+				currentFsmState = _startLineChangeState(adjustment);
+			}
+			else if (millis() - lineLostTimer > LINE_LOST_STOP_TIMEOUT)
+			{
+				// Line lost for greater than threshold - Stop movement
+				currentFsmState = STATE_1E;
+			}
+
+			isLineLost = true;
+			break;
+		}
+		case (STATE_1E):
+		{
+			LcdDisplayText("STATE_1E", "START LOST STOP");
+
+			// Stop Movement
+			StopMovement();
 			break;
 		}
 		case (STATE_2):		// Perform 90 degree CCW Rotation
@@ -141,6 +181,7 @@ void _finiteStateMachineProcess()
 			// Rotate 90 degrees CCW to being circle-line following
 			Rotate90CCW();
 			currentFsmState = STATE_3C;
+			isLineLost = false;
 			break;
 		}
 
@@ -328,7 +369,7 @@ void _finiteStateMachineProcess()
 		case (STATE_9):		// Turn on EM and wait small delay
 		{
 			LcdDisplayText("STATE_9", "TURNING ON MAG");
-
+			
 			// Turn on Electromagnet
 			PowerOnMagnet();
 
@@ -352,10 +393,15 @@ void _finiteStateMachineProcess()
 			currentFsmState = STATE_11;
 			break;
 		}
+		case (STATE_11):
+		{
+			LcdDisplayText("STATE_11", "FINISHED");
+			break;
+		}
 	}
 
 	// Loop Delay
-	delay(25);
+	delay(5);
 }
 
 StartLineFollowingAdjustment _adjustStartLineFollowingMovement()
@@ -519,82 +565,34 @@ int _ballDetectionOrLineAdjustChangeState(int xDistanceDetection, int yDistanceD
 	int newState;
 	if (xDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD)
 	{
-		// Ball bearing detected to the side of robot
-		newState = STATE_4;
+		if (isBallBeingDetectedInX == false) { ballDetectedInXTimer = millis(); }
+		if (millis() - ballDetectedInXTimer > DETECTION_PERSISTENCE)
+		{
+			// Ball bearing detected to the side of robot
+			newState = STATE_4;
+		}
+		isBallBeingDetectedInX = true;
 	}
 	else if (yDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD)
 	{
-		// Ball bearing detected in front of robot
-		newState = STATE_5;
+		if (isBallBeingDetectedInY == false) { ballDetectedInYTimer = millis(); }
+		if (millis() - ballDetectedInYTimer > DETECTION_PERSISTENCE)
+		{
+			// Ball bearing detected in front of robot
+			newState = STATE_5;
+		}
+		isBallBeingDetectedInY = true;
 	}
 	else
 	{
 		// Determine Line Adjustment
 		CircleLineFollowingAdjustment adjustment = _adjustCircleLineFollowingMovement();
 		newState = _circleLineChangeState(adjustment);
+		isBallBeingDetectedInX = false;
+		isBallBeingDetectedInY = false;
 	}
 	
 	return newState;
 }
 
-
-
-
-//void FiniteStateMachineProcess()
-//{
-//	// Process Line-Reader Input
-//	LineDetectionStructure lineDetectionStruct = ProcessLineFollowerInput();
-//
-//	if (isOnStartingLine)
-//	{
-//		// STATE 1: Perform Line Following on Starting Path
-//		StartPathFollowing(lineDetectionStruct);
-//	}
-//	else
-//	{
-//		// Process RGB Input
-//		RGBreadingStructure rgbInput = RGBreadColor();
-//
-//		// Process X and Y IR Sensors
-//		int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
-//		int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
-//
-//		// STATE 2: Perform Line Following around Main Circle
-//		if (distance_Y > 30 && isMovingToBall == false)
-//		{
-//			LineFollowing(lineDetectionStruct);
-//		}
-//		// STATE 3: Ball detected in Y-Direction
-//		else if (distance_Y < 30 || isMovingToBall == true)
-//		{
-//			isMovingToBall = true;
-//
-//			// STATE 3A: Move towards ball
-//			if (distance_Y > 10)
-//			{
-//				LcdDisplayText("BALL Y - SLOW", distance_Y);
-//				BallLocateSlowMovement();
-//			}
-//			// STATE 3B: Pick up ball
-//			else
-//			{
-//				LcdDisplayText("BALL Y - PICK", distance_Y);
-//				StopMovement();
-//				if (isPickingUpBall == false)
-//				{
-//					BallPickupRotation();
-//					LowerPulley();
-//					PowerOnMagnet();
-//					delay(2000);
-//					RaisePulley();
-//				}
-//				isMovingToBall = false;
-//				isPickingUpBall = true;
-//			}
-//		}
-//	}
-//
-//	// Loop Delay
-//	delay(25);
-//}
 

@@ -8,12 +8,10 @@ int irReadingsLongRangeY[AVERAGE_READING_WINDOW];
 int totalCloseRange = 0;
 int totalLongRangeX = 0;
 int totalLongRangeY = 0;
-int averageCloseRange = 0;
-int averageLongRangeX = 0;
-int averageLongRangeY = 0;
 int currentReadingIndexCloseRange = 0;
 int currentReadingIndexLongRangeX = 0;
 int currentReadingIndexLongRangeY = 0;
+int averageDistance = 0;
 
 void InitializeProximitySensors()
 {
@@ -53,41 +51,74 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 			// Add the reading to the total
 			totalCloseRange = totalCloseRange + irReadingsCloseRange[currentReadingIndexCloseRange];
 
-			// Move to the next read position
+			// Move index to the next read position
 			currentReadingIndexCloseRange = currentReadingIndexCloseRange + 1;
 
 			// Check if the end of the reading array has been reached
 			if (currentReadingIndexCloseRange >= AVERAGE_READING_WINDOW) { currentReadingIndexCloseRange = 0; }
 
 			// Return the filtered value
-			averageCloseRange = totalCloseRange / AVERAGE_READING_WINDOW;
-
-			return averageCloseRange;
+			averageDistance = totalCloseRange / AVERAGE_READING_WINDOW;
 			break;
 		}
 		case SharpSensorModel::GP2Y0A60SZLF:
 		{
 			switch (direction)
 			{
-			case DirectionOfIR::X:
-			{
-				double analogLongRangeXIR = analogRead(IR_X_SENSOR_PIN);
-				voltage = ConvertAnalogInToVoltage(analogLongRangeXIR);
-				distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
-				break;
+				case DirectionOfIR::X:
+				{
+					// Subtract previous reading
+					totalLongRangeX = totalLongRangeX - irReadingsLongRangeX[currentReadingIndexLongRangeX];
+
+					// Read current value from the sensor
+					double analogLongRangeXIR = analogRead(IR_X_SENSOR_PIN);
+					voltage = ConvertAnalogInToVoltage(analogLongRangeXIR);
+					distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
+					irReadingsLongRangeX[currentReadingIndexLongRangeX] = distance;
+
+					// Add the reading to the total
+					totalLongRangeX = totalLongRangeX + irReadingsLongRangeX[currentReadingIndexLongRangeX];
+
+					// Move index to next read position
+					currentReadingIndexLongRangeX = currentReadingIndexLongRangeX + 1;
+
+					// Check if the end of the reading array has been reached
+					if (currentReadingIndexLongRangeX >= AVERAGE_READING_WINDOW) { currentReadingIndexLongRangeX = 0; }
+
+					// Return the filtered value
+					averageDistance = totalLongRangeX / AVERAGE_READING_WINDOW;
+					break;
+				}
+				case DirectionOfIR::Y:
+				{
+					// Subtract previous reading
+					totalLongRangeY = totalLongRangeY - irReadingsLongRangeY[currentReadingIndexLongRangeY];
+
+					// Read current value from the sensor
+					double analogLongRangeYIR = analogRead(IR_Y_SENSOR_PIN);
+					voltage = ConvertAnalogInToVoltage(analogLongRangeYIR);
+					distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
+					irReadingsLongRangeY[currentReadingIndexLongRangeY] = distance;
+
+					// Add the reading to the total
+					totalLongRangeY = totalLongRangeY + irReadingsLongRangeY[currentReadingIndexLongRangeY];
+
+					// Move index to next read position
+					currentReadingIndexLongRangeY = currentReadingIndexLongRangeY + 1;
+
+					// Check if the end of the reading array has been reached
+					if (currentReadingIndexLongRangeY >= AVERAGE_READING_WINDOW) { currentReadingIndexLongRangeY = 0; }
+
+					// Return the filtered value
+					averageDistance = totalLongRangeY / AVERAGE_READING_WINDOW;
+					break;
+				}
 			}
-			case DirectionOfIR::Y:
-			{
-				double analogLongRangeYIR = analogRead(IR_Y_SENSOR_PIN);
-				voltage = ConvertAnalogInToVoltage(analogLongRangeYIR);
-				distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
-				break;
-			}
-			}
+			break;
 		}
 	}
 
-	return distance;
+	return averageDistance;
 }
 
 int CalculateUltrasonicDistance()

@@ -5,7 +5,7 @@
 const uint8_t IR_Y_SENSOR_PIN = A0;
 const uint8_t IR_X_SENSOR_PIN = A1;
 const uint8_t IR_CLOSE_RANGE_SENSOR_PIN = A2;
-const uint8_t IR_OBJECT_DETECTION_SENSOR_PIN = 35;
+const uint8_t IR_OBJECT_DETECTION_SENSOR_PIN = 20;
 const uint8_t US_ECHO_PIN = 36;
 const uint8_t US_TRIGGER_PIN = 37;
 

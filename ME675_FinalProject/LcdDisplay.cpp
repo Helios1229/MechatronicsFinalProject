@@ -82,6 +82,7 @@ void LcdDisplayText(float value1, char value2[])
 
 void LcdDisplayText(char value1[], char value2[])
 {
+	lcd.home();
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(value1);

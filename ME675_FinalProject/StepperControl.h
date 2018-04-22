@@ -22,6 +22,7 @@ const bool LEFT_STEPPER_FORWARD_DIRECTION = 1;							// Boolean value correspond
 void StepperInitialization();
 void MoveToStartLine();
 void StartLineFollowingMoveStraight();
+void StartLineFollowingSlowMovement();
 void LineFollowingMoveCW();
 void LineFollowingMoveRight();
 void LineFollowingMoveFarRight();

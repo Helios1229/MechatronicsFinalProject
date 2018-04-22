@@ -78,6 +78,21 @@ void StartLineFollowingMoveStraight()
 	delay(1);
 }
 
+void StartLineFollowingSlowMovement()
+{
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+}
+
 void LineFollowingMoveCW()
 {
 	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
@@ -186,7 +201,7 @@ void BallLocateVerySlowMovement()
 void AdjustPositionIntoCloseRange()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < 1000)
+	while (millis() - currentTime < 1250)
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
