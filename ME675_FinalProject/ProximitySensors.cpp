@@ -31,8 +31,7 @@ void InitializeProximitySensors()
 
 int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 {
-	double voltage;
-	int distance;
+	int distance = 0;
 
 	switch (sensorType)
 	{
@@ -43,8 +42,7 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 
 			// Read current value from the sensor
 			double analogCloseRangeIR = analogRead(IR_CLOSE_RANGE_SENSOR_PIN);
-			voltage = ConvertAnalogInToVoltage(analogCloseRangeIR);
-			distance = SHORT_RANGE_MULTIPLIER * pow(voltage, SHORT_RANGE_POWER);
+			distance = SHORT_RANGE_QUAD_COEFF * pow(analogCloseRangeIR, 2) + SHORT_RANGE_LINEAR_COEFF * analogCloseRangeIR + SHORT_RANGE_OFFSET;
 			if ((distance > SHORT_RANGE_MAX_DISTANCE) || (distance < 0)) { distance = SHORT_RANGE_INVALID_DISTANCE; }
 			irReadingsCloseRange[currentReadingIndexCloseRange] = distance;
 
@@ -72,8 +70,7 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 
 					// Read current value from the sensor
 					double analogLongRangeXIR = analogRead(IR_X_SENSOR_PIN);
-					voltage = ConvertAnalogInToVoltage(analogLongRangeXIR);
-					distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
+					distance = LONG_RANGE_X_MULTIPLIER * pow(analogLongRangeXIR, LONG_RANGE_X_POWER);
 					if ((distance > LONG_RANGE_MAX_DISTANCE) || (distance < 0)) { distance = LONG_RANGE_INVALID_DISTANCE; }
 					irReadingsLongRangeX[currentReadingIndexLongRangeX] = distance;
 
@@ -97,8 +94,7 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 
 					// Read current value from the sensor
 					double analogLongRangeYIR = analogRead(IR_Y_SENSOR_PIN);
-					voltage = ConvertAnalogInToVoltage(analogLongRangeYIR);
-					distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
+					distance = LONG_RANGE_Y_MULTIPLIER * pow(analogLongRangeYIR, LONG_RANGE_Y_POWER);
 					if ((distance > LONG_RANGE_MAX_DISTANCE) || (distance < 0)) { distance = LONG_RANGE_INVALID_DISTANCE; }
 					irReadingsLongRangeY[currentReadingIndexLongRangeY] = distance;
 

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-const unsigned int BLACK_LINE_THRESHOLD = 170;
+const unsigned int BLACK_LINE_THRESHOLD = 200;
 
 struct LineDetectionStructure
 {

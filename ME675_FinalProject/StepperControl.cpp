@@ -52,6 +52,28 @@ void MoveToStartLine()
 	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
 	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+
+	delay(START_MOVEMENT_PERIOD / 10);
+
+	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+
+	delay(START_MOVEMENT_PERIOD / 10);
+
+	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
@@ -60,7 +82,7 @@ void MoveToStartLine()
 	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 
-	delay(START_MOVEMENT_PERIOD);
+	delay(START_MOVEMENT_PERIOD*0.8);
 }
 
 void StartLineFollowingMoveStraight()
@@ -113,7 +135,7 @@ void LineFollowingMoveRight()
 	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
@@ -128,7 +150,7 @@ void LineFollowingMoveFarRight()
 	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
@@ -173,12 +195,12 @@ void LineFollowingSlowMovement()
 	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep4);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }

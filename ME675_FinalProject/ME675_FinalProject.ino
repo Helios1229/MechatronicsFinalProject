@@ -307,7 +307,7 @@ void _finiteStateMachineProcess()
 			RotateSlowCW();
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
 			LcdDisplayMovementYIRdistance("STATE_4", distance_Y, "BALL DETECT IN X");
-			if (distance_Y <= MAX_BALL_DETECTION_THRESHOLD)	{ currentFsmState = STATE_5; }
+			if (distance_Y <= MAX_BALL_CLOSE_RANGE_THRESHOLD)	{ currentFsmState = STATE_5; }
 			break;
 		}
 		case (STATE_5):		// Ball detected in Y-Direction, Move towards it
@@ -393,7 +393,7 @@ void _finiteStateMachineProcess()
 	}
 
 	// Loop Delay
-	delay(50);
+	delay(15);
 }
 
 StartLineFollowingAdjustment _adjustStartLineFollowingMovement()
@@ -580,7 +580,9 @@ int _circleLineChangeState(CircleLineFollowingAdjustment adjustment)
 int _ballDetectionOrLineAdjustChangeState(int xDistanceDetection, int yDistanceDetection)
 {
 	int newState = 0;
-	if (xDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD)
+	if ((xDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD) 
+		&& ((xDistanceDetection < INVALID_RANGE_X_MIN) 
+		|| (xDistanceDetection > INVALID_RANGE_X_MAX)))
 	{
 		// If first detection in this direction, begin persistence timer
 		if (isBallBeingDetectedInX == false) { ballDetectedInXTimer = millis(); }
