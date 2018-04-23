@@ -95,7 +95,7 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_1A):	// Following START LINE - Move Straight
 		{
-			LcdDisplayText("STATE_1A", "STARTLINE MOVEST");
+			LcdDisplayText("STATE_1A", "STARTLN STRAIGHT");
 
 			// Start moving straight
 			StartLineFollowingMoveStraight();
@@ -108,7 +108,7 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_1B):	// Following START LINE - Move Right (CW)
 		{
-			LcdDisplayText("STATE_1B", "STARTLINE MOVERT");
+			LcdDisplayText("STATE_1B", "STARTLN RIGHT");
 
 			// Adjust movement to the right
 			LineFollowingMoveRight();
@@ -124,7 +124,7 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_1C):	// Following START LINE - Move Left (CCW)
 		{
-			LcdDisplayText("STATE_1C", "STARTLINE MOVELT");
+			LcdDisplayText("STATE_1C", "STARTLN LEFT");
 
 			// Adjust movement to the right
 			LineFollowingMoveLeft();
@@ -393,7 +393,7 @@ void _finiteStateMachineProcess()
 	}
 
 	// Loop Delay
-	delay(25);
+	delay(50);
 }
 
 StartLineFollowingAdjustment _adjustStartLineFollowingMovement()

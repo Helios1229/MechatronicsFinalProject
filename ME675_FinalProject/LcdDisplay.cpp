@@ -12,7 +12,7 @@ void LcdDisplayInitialization()
 
 void LcdDisplayLineSensorArray(unsigned char text[])
 {
-	lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(text[0]);
@@ -35,7 +35,7 @@ void LcdDisplayLineSensorArray(unsigned char text[])
 
 void LcdDisplayLineSensors(LineDetectionStructure lineStruct)
 {
-	lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(lineStruct.Sensor0LineDetected);
@@ -58,7 +58,7 @@ void LcdDisplayLineSensors(LineDetectionStructure lineStruct)
 
 void LcdDisplayMovementXandYIRdistance(char value1[], float value2, float value3, char value4[])
 {
-	lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(value1);
@@ -72,7 +72,7 @@ void LcdDisplayMovementXandYIRdistance(char value1[], float value2, float value3
 
 void LcdDisplayMovementYIRdistance(char value1[], float value2, char value3[])
 {
-	lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(value1);
@@ -85,7 +85,7 @@ void LcdDisplayMovementYIRdistance(char value1[], float value2, char value3[])
 
 void LcdDisplayText(char value[])
 {
-	lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(value);
@@ -93,7 +93,7 @@ void LcdDisplayText(char value[])
 
 void LcdDisplayText(char value1[], float value2)
 {
-	lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(value1);
@@ -103,7 +103,7 @@ void LcdDisplayText(char value1[], float value2)
 
 void LcdDisplayText(float value1, char value2[])
 {
-	lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(value1);
@@ -113,8 +113,7 @@ void LcdDisplayText(float value1, char value2[])
 
 void LcdDisplayText(char value1[], char value2[])
 {
-	lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
-	lcd.home();
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(value1);
@@ -124,7 +123,7 @@ void LcdDisplayText(char value1[], char value2[])
 
 void LcdDisplayText(char value1[], float value2, float value3)
 {
-	lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(value1);
