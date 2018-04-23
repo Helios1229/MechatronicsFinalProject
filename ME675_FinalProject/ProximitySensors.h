@@ -8,9 +8,8 @@ const uint8_t IR_CLOSE_RANGE_SENSOR_PIN = A2;
 const uint8_t US_ECHO_PIN = 36;
 const uint8_t US_TRIGGER_PIN = 37;
 
-const double SHORT_RANGE_QUAD_COEFF = 16.17;
-const double SHORT_RANGE_LINEAR_COEFF = -271.65;
-const double SHORT_RANGE_OFFSET = 1131;
+const double SHORT_RANGE_MULTIPLIER = 2307.9;
+const double SHORT_RANGE_POWER = -1.437;
 const double LONG_RANGE_X_MULTIPLIER = 5208.3;
 const double LONG_RANGE_Y_MULTIPLIER = 5628.4;
 const double LONG_RANGE_X_POWER = -1.023;

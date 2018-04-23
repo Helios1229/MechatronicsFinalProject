@@ -42,7 +42,7 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 
 			// Read current value from the sensor
 			double analogCloseRangeIR = analogRead(IR_CLOSE_RANGE_SENSOR_PIN);
-			distance = SHORT_RANGE_QUAD_COEFF * pow(analogCloseRangeIR, 2) + SHORT_RANGE_LINEAR_COEFF * analogCloseRangeIR + SHORT_RANGE_OFFSET;
+			distance = SHORT_RANGE_MULTIPLIER * pow(analogCloseRangeIR, SHORT_RANGE_POWER);
 			if ((distance > SHORT_RANGE_MAX_DISTANCE) || (distance < 0)) { distance = SHORT_RANGE_INVALID_DISTANCE; }
 			irReadingsCloseRange[currentReadingIndexCloseRange] = distance;
 
