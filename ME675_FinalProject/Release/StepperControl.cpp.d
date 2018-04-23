@@ -1,8 +1,8 @@
-C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\StepperControl.cpp.o: \
- C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\StepperControl.cpp \
- C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\ME675_FinalProject.h \
- C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\StepperControl.h \
- C:\Users\JonPa\OneDrive\Documents\Arduino\libraries\AMIS30543/AMIS30543.h \
+C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\StepperControl.cpp.o: \
+ C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\StepperControl.cpp \
+ C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\ME675_FinalProject.h \
+ C:\Users\Jon\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\StepperControl.h \
+ C:\Users\Jon\Documents\Arduino\libraries\AMIS30543/AMIS30543.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino/Arduino.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino/binary.h \
  C:\Program\ Files\ (x86)\Arduino\hardware\arduino\avr\cores\arduino/WCharacter.h \

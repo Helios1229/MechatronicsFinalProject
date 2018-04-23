@@ -2,11 +2,18 @@
 #include "PulleyControl.h"
 #include "ProximitySensors.h"
 
+volatile bool raisePulley = false;
+
 void InitializePulleyMotorControl()
 {
 	pinMode(RAISE_PULLEY_PIN, OUTPUT);
 	pinMode(LOWER_PULLEY_PIN, OUTPUT);
 	pinMode(POWER_MAGNET_PIN, OUTPUT);
+	pinMode(LEFT_SIDE_LIMIT_SWITCH_PIN, INPUT);
+	pinMode(RIGHT_SIDE_LIMIT_SWITCH_PIN, INPUT);
+
+	attachInterrupt(digitalPinToInterrupt(LEFT_SIDE_LIMIT_SWITCH_PIN), StopRaisingPulley, HIGH);
+	attachInterrupt(digitalPinToInterrupt(RIGHT_SIDE_LIMIT_SWITCH_PIN), StopRaisingPulley, HIGH);
 
 	digitalWrite(RAISE_PULLEY_PIN, LOW);
 	digitalWrite(LOWER_PULLEY_PIN, LOW);
@@ -16,7 +23,7 @@ void InitializePulleyMotorControl()
 void LowerPulley()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < 6000)
+	while (millis() - currentTime < 6750)
 	{
 		digitalWrite(LOWER_PULLEY_PIN, HIGH);
 	}
@@ -25,13 +32,17 @@ void LowerPulley()
 
 void RaisePulley()
 {
-	bool isBearingHolsterPresent = false;
-	while (isBearingHolsterPresent == false)
+	raisePulley = true;
+	while (raisePulley)
 	{
 		digitalWrite(RAISE_PULLEY_PIN, HIGH);
-		isBearingHolsterPresent = IsBearingHolsterPresent();
 	}
 	digitalWrite(RAISE_PULLEY_PIN, LOW);
+}
+
+void StopRaisingPulley()
+{
+	raisePulley = false;
 }
 
 void PowerOnMagnet()

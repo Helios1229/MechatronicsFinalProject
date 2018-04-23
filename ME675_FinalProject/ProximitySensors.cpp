@@ -15,9 +15,9 @@ int averageDistance = 0;
 
 void InitializeProximitySensors()
 {
-	pinMode(IR_OBJECT_DETECTION_SENSOR_PIN, INPUT);
 	pinMode(US_ECHO_PIN, INPUT);
 	pinMode(US_TRIGGER_PIN, OUTPUT);
+
 	digitalWrite(US_TRIGGER_PIN, LOW);
 
 	// Initialize all running averages to 0
@@ -45,7 +45,7 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 			double analogCloseRangeIR = analogRead(IR_CLOSE_RANGE_SENSOR_PIN);
 			voltage = ConvertAnalogInToVoltage(analogCloseRangeIR);
 			distance = SHORT_RANGE_MULTIPLIER * pow(voltage, SHORT_RANGE_POWER);
-			if (distance > SHORT_RANGE_MAX_DISTANCE) { distance = SHORT_RANGE_INVALID_DISTANCE; }
+			if ((distance > SHORT_RANGE_MAX_DISTANCE) || (distance < 0)) { distance = SHORT_RANGE_INVALID_DISTANCE; }
 			irReadingsCloseRange[currentReadingIndexCloseRange] = distance;
 
 			// Add the reading to the total
@@ -74,6 +74,7 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 					double analogLongRangeXIR = analogRead(IR_X_SENSOR_PIN);
 					voltage = ConvertAnalogInToVoltage(analogLongRangeXIR);
 					distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
+					if ((distance > LONG_RANGE_MAX_DISTANCE) || (distance < 0)) { distance = LONG_RANGE_INVALID_DISTANCE; }
 					irReadingsLongRangeX[currentReadingIndexLongRangeX] = distance;
 
 					// Add the reading to the total
@@ -98,6 +99,7 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 					double analogLongRangeYIR = analogRead(IR_Y_SENSOR_PIN);
 					voltage = ConvertAnalogInToVoltage(analogLongRangeYIR);
 					distance = LONG_RANGE_MULTIPLIER * pow(voltage, LONG_RANGE_POWER);
+					if ((distance > LONG_RANGE_MAX_DISTANCE) || (distance < 0)) { distance = LONG_RANGE_INVALID_DISTANCE; }
 					irReadingsLongRangeY[currentReadingIndexLongRangeY] = distance;
 
 					// Add the reading to the total
@@ -134,20 +136,4 @@ int CalculateUltrasonicDistance()
 	long duration = pulseIn(US_ECHO_PIN, HIGH);
 	int distance = duration * 0.034 / 2;
 	return distance;
-}
-
-bool IsBearingHolsterPresent()
-{
-	bool isHolsterLifted = false;
-	int detectionCounts = 0;
-	double startTime = millis();
-
-	while (millis() - startTime < HOLSTER_DETECTION_SAMPLE_PERIOD)
-	{
-		int isObjectDetected = digitalRead(IR_OBJECT_DETECTION_SENSOR_PIN);
-		if (isObjectDetected == LOW) { detectionCounts++; }
-	}
-
-	if (detectionCounts > HOLSTER_LIFTED_THRESHOLD) { isHolsterLifted = true; }
-	return isHolsterLifted;
 }

@@ -69,8 +69,6 @@ void setup()
 	InitializePulleyMotorControl();
 
 	//Serial.begin(9600);
-
-	//currentFsmState = STATE_3C;
 }
 
 
@@ -191,11 +189,10 @@ void _finiteStateMachineProcess()
 
 		case (STATE_3A):	// Make FarLeft-Hand (CCW) Adjustment
 		{
-			LcdDisplayText("STATE_3A", "MOVE FAR LEFT");
-
 			// Scan playing field for ball bearings
 			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+			LcdDisplayMovementXandYIRdistance("STATE_3A", distance_X, distance_Y, "MOVE FAR LEFT");
 
 			// Adjust movement to the right
 			LineFollowingMoveFarLeft();
@@ -207,11 +204,10 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_3B):	// Make Left-Hand (CCW) Adjustment
 		{
-			LcdDisplayText("STATE_3B", "MOVE LEFT");
-
 			// Scan playing field for ball bearings
 			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+			LcdDisplayMovementXandYIRdistance("STATE_3B", distance_X, distance_Y, "MOVE LEFT");
 
 			// Adjust movement to the right
 			LineFollowingMoveLeft();
@@ -223,11 +219,10 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_3C):	// Follow CW-Path (normal movement)
 		{
-			LcdDisplayText("STATE_3C", "MOVE NORMAL CW");
-
 			// Scan playing field for ball bearings
 			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+			LcdDisplayMovementXandYIRdistance("STATE_3C", distance_X, distance_Y, "MOVE NORMAL CW");
 
 			// Adjust movement to the right
 			LineFollowingMoveCW();
@@ -239,11 +234,10 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_3D):	// Make Right-Hand (CW) Adjustment
 		{
-			LcdDisplayText("STATE_3D", "MOVE RIGHT");
-
 			// Scan playing field for ball bearings
 			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+			LcdDisplayMovementXandYIRdistance("STATE_3D", distance_X, distance_Y, "MOVE RIGHT");
 
 			// Adjust movement to the right
 			LineFollowingMoveRight();
@@ -255,11 +249,10 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_3E):	// Make Right-Hand (CW) Adjustment
 		{
-			LcdDisplayText("STATE_3E", "MOVE FAR RIGHT");
-
 			// Scan playing field for ball bearings
 			int distance_X = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::X);
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+			LcdDisplayMovementXandYIRdistance("STATE_3E", distance_X, distance_Y, "MOVE FAR RIGHT");
 
 			// Adjust movement to the right
 			LineFollowingMoveFarRight();
@@ -301,6 +294,7 @@ void _finiteStateMachineProcess()
 
 			// Stop Movement
 			StopMovement();
+			break;
 		}
 
 		///////////////////////////////////////
@@ -309,21 +303,19 @@ void _finiteStateMachineProcess()
 
 		case (STATE_4):		// Ball detected in X-Direction, Rotate 90 degrees CW
 		{
-			LcdDisplayText("STATE_4", "BALL DETECT IN X");
-
 			// Rotate slowly CW until ball is detected in the Y-Direction
 			RotateSlowCW();
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+			LcdDisplayMovementYIRdistance("STATE_4", distance_Y, "BALL DETECT IN X");
 			if (distance_Y <= MAX_BALL_DETECTION_THRESHOLD)	{ currentFsmState = STATE_5; }
 			break;
 		}
 		case (STATE_5):		// Ball detected in Y-Direction, Move towards it
 		{
-			LcdDisplayText("STATE_5", "BALL DETECT IN Y");
-
 			// Advance very slowly toward ball until threshold is reached
 			BallLocateVerySlowMovement();
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
+			LcdDisplayMovementYIRdistance("STATE_5", distance_Y, "BALL DETECT IN Y");
 			if (distance_Y <= MIN_BALL_DETECTION_THRESHOLD) { currentFsmState = STATE_6A; }
 			break;
 		}
@@ -338,21 +330,19 @@ void _finiteStateMachineProcess()
 		}
 		case (STATE_6B):	// Ball at Close-Range IR threshold distance, Rotate CW to align-middle
 		{
-			LcdDisplayText("STATE_6B", "BALL AT CLOSE IR");
-
 			// Rotate slowly CW until ball is aligned with middle of robot
 			RotateSlowCW();
 			int distance_CR = CalculateIRDistance(SharpSensorModel::GP2Y0A51SK0F);
+			LcdDisplayMovementYIRdistance("STATE_6B", distance_CR, "BALL AT CLOSE IR");
 			if ((distance_CR <= MAX_BALL_CLOSE_RANGE_THRESHOLD) && (distance_CR != SHORT_RANGE_INVALID_DISTANCE)) { currentFsmState = STATE_7; }
 			break;
 		}
 		case (STATE_7):		// Ball aligned with middle, advance slowly to pick-up threshold
 		{
-			LcdDisplayText("STATE_7", "BALL ALIGNED");
-
 			// Move forward very slowly until ball is at pickup threshold
 			BallLocateVerySlowMovement();
 			int distance_CR = CalculateIRDistance(SharpSensorModel::GP2Y0A51SK0F);
+			LcdDisplayMovementYIRdistance("STATE_7", distance_CR, "BALL ALIGNED");
 			if ((distance_CR <= MIN_BALL_CLOSE_RANGE_THRESHOLD) && (distance_CR != SHORT_RANGE_INVALID_DISTANCE)) { currentFsmState = STATE_8; }
 			break;
 		}
@@ -369,12 +359,14 @@ void _finiteStateMachineProcess()
 		case (STATE_9):		// Turn on EM and wait small delay
 		{
 			LcdDisplayText("STATE_9", "TURNING ON MAG");
-			
-			// Turn on Electromagnet
-			PowerOnMagnet();
 
 			// Start elapsed timer to ensure magnet has enough time to power on
-			if (isMagnetPoweringOn == false) { magnetPoweringOnTimer = millis(); }
+			if (isMagnetPoweringOn == false) 
+			{
+				// Turn on Electromagnet
+				PowerOnMagnet();
+				magnetPoweringOnTimer = millis();
+			}
 			if (millis() - magnetPoweringOnTimer > MAGNET_POWER_ON_DELAY)
 			{
 				currentFsmState = STATE_10;
@@ -401,7 +393,7 @@ void _finiteStateMachineProcess()
 	}
 
 	// Loop Delay
-	delay(5);
+	delay(25);
 }
 
 StartLineFollowingAdjustment _adjustStartLineFollowingMovement()
@@ -431,6 +423,16 @@ StartLineFollowingAdjustment _adjustStartLineFollowingMovement()
 	{
 		adjustMovement = StartLineFollowingAdjustment::START_LEFT;
 	}
+	else if(!lineDetectionStruct.Sensor1LineDetected
+		&& !lineDetectionStruct.Sensor2LineDetected
+		&& !lineDetectionStruct.Sensor3LineDetected
+		&& !lineDetectionStruct.Sensor4LineDetected
+		&& !lineDetectionStruct.Sensor5LineDetected
+		&& !lineDetectionStruct.Sensor6LineDetected
+		&& !lineDetectionStruct.Sensor7LineDetected)
+	{
+		adjustMovement = StartLineFollowingAdjustment::START_LOST;
+	}
 	else
 	{
 		adjustMovement = StartLineFollowingAdjustment::START_STRAIGHT;
@@ -441,7 +443,7 @@ StartLineFollowingAdjustment _adjustStartLineFollowingMovement()
 
 int _startLineChangeState(StartLineFollowingAdjustment adjustment)
 {
-	int newState;
+	int newState = 0;
 	switch (adjustment)
 	{
 		case (StartLineFollowingAdjustment::START_STRAIGHT):
@@ -459,9 +461,19 @@ int _startLineChangeState(StartLineFollowingAdjustment adjustment)
 			newState = STATE_1C;
 			break;
 		}
+		case (StartLineFollowingAdjustment::START_LOST):
+		{
+			newState = STATE_1D;
+			break;
+		}
 		case (StartLineFollowingAdjustment::ROTATE):
 		{
 			newState = STATE_2;
+			break;
+		}
+		default:
+		{
+			newState = STATE_1A;
 			break;
 		}
 	}
@@ -516,13 +528,18 @@ CircleLineFollowingAdjustment _adjustCircleLineFollowingMovement()
 		// Line is lost
 		adjustMovement = CircleLineFollowingAdjustment::LOST;
 	}
+	else
+	{
+		// No conditions satisfied, assume line is lost
+		adjustMovement = CircleLineFollowingAdjustment::LOST;
+	}
 
 	return adjustMovement;
 }
 
 int _circleLineChangeState(CircleLineFollowingAdjustment adjustment)
 {
-	int newState;
+	int newState = 0;
 	switch (adjustment)
 	{
 		case CircleLineFollowingAdjustment::FAR_LEFT:
@@ -562,24 +579,44 @@ int _circleLineChangeState(CircleLineFollowingAdjustment adjustment)
 
 int _ballDetectionOrLineAdjustChangeState(int xDistanceDetection, int yDistanceDetection)
 {
-	int newState;
+	int newState = 0;
 	if (xDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD)
 	{
+		// If first detection in this direction, begin persistence timer
 		if (isBallBeingDetectedInX == false) { ballDetectedInXTimer = millis(); }
+
+		// Check if specified persistence has elapsed, otherwise continue line-following
 		if (millis() - ballDetectedInXTimer > DETECTION_PERSISTENCE)
 		{
 			// Ball bearing detected to the side of robot
 			newState = STATE_4;
+			isBallBeingDetectedInX = false;
+		}
+		else
+		{
+			// Determine Line Adjustment
+			CircleLineFollowingAdjustment adjustment = _adjustCircleLineFollowingMovement();
+			newState = _circleLineChangeState(adjustment);
 		}
 		isBallBeingDetectedInX = true;
 	}
 	else if (yDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD)
 	{
+		// If first detection in this direction, begin persistence timer
 		if (isBallBeingDetectedInY == false) { ballDetectedInYTimer = millis(); }
+
+		// Check if specified persistence has elapsed, otherwise continue line-following
 		if (millis() - ballDetectedInYTimer > DETECTION_PERSISTENCE)
 		{
 			// Ball bearing detected in front of robot
 			newState = STATE_5;
+			isBallBeingDetectedInY = false;
+		}
+		else
+		{
+			// Determine Line Adjustment
+			CircleLineFollowingAdjustment adjustment = _adjustCircleLineFollowingMovement();
+			newState = _circleLineChangeState(adjustment);
 		}
 		isBallBeingDetectedInY = true;
 	}

@@ -201,7 +201,7 @@ void BallLocateVerySlowMovement()
 void AdjustPositionIntoCloseRange()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < 1250)
+	while (millis() - currentTime < 2000)
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
