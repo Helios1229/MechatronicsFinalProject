@@ -39,6 +39,7 @@ const int STATE_3G = 1037;		// Line lost completely, Stop Movement
 const int STATE_3H = 1038;		// Recover line path
 
 // BALL-BEARING DETECTION AND PICKUP
+
 const int STATE_4 = 1040;		// Ball detected in X-Direction, Rotate until detected in Y-Direction
 const int STATE_5 = 1050;		// Ball detected in Y-Direction, Move towards it
 const int STATE_6A = 1061;		// Ball at Long-Range IR threshold distance, move forward slightly to bring into range of Close-Range IR
@@ -51,6 +52,8 @@ const int STATE_10 = 1100;		// Raise pulley until threshold is reached
 const int STATE_11 = 1110;		// TBD!!
 
 int currentFsmState = STATE_0;	// Begin at initial starting state
+int xDetectedDistance = 0;
+int yDetectedDistance = 0;
 bool isLineLost = false;		
 bool isMagnetPoweringOn = false;
 bool isBallBeingDetectedInX = false;
@@ -89,7 +92,8 @@ void _finiteStateMachineProcess()
 		case (STATE_0):		// Moving from START position to START LINE
 		{
 			LcdDisplayText("STATE_0", "MOVETO STARTLINE");
-			MoveToStartLine();
+			StartLineFollowingMoveStraight();
+			delay(1000);
 			currentFsmState = STATE_1A;
 			break;
 		}
@@ -306,7 +310,7 @@ void _finiteStateMachineProcess()
 			// Rotate slowly CW until ball is detected in the Y-Direction
 			RotateSlowCW();
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
-			LcdDisplayMovementYIRdistance("STATE_4", distance_Y, "BALL DETECT IN X");
+			LcdDisplayMovementXandYIRdistance("STATE_4", distance_Y, xDetectedDistance, "BALL DETECT IN X");
 			if (distance_Y <= MAX_BALL_CLOSE_RANGE_THRESHOLD)	{ currentFsmState = STATE_5; }
 			break;
 		}
@@ -315,7 +319,9 @@ void _finiteStateMachineProcess()
 			// Advance very slowly toward ball until threshold is reached
 			BallLocateVerySlowMovement();
 			int distance_Y = CalculateIRDistance(SharpSensorModel::GP2Y0A60SZLF, DirectionOfIR::Y);
-			LcdDisplayMovementYIRdistance("STATE_5", distance_Y, "BALL DETECT IN Y");
+			if (xDetectedDistance != 0){ LcdDisplayMovementXandYIRdistance("STATE_5", distance_Y, xDetectedDistance, "BALL DETECT IN X"); }
+			else if(yDetectedDistance != 0){ LcdDisplayMovementXandYIRdistance("STATE_5", distance_Y, yDetectedDistance, "BALL DETECT IN Y"); }
+			else { LcdDisplayText("STATE_5", "DIST ERROR"); }
 			if (distance_Y <= MIN_BALL_DETECTION_THRESHOLD) { currentFsmState = STATE_6A; }
 			break;
 		}
@@ -580,7 +586,7 @@ int _circleLineChangeState(CircleLineFollowingAdjustment adjustment)
 int _ballDetectionOrLineAdjustChangeState(int xDistanceDetection, int yDistanceDetection)
 {
 	int newState = 0;
-	if ((xDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD) 
+	if ((xDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD_X) 
 		&& ((xDistanceDetection < INVALID_RANGE_X_MIN) 
 		|| (xDistanceDetection > INVALID_RANGE_X_MAX)))
 	{
@@ -588,10 +594,11 @@ int _ballDetectionOrLineAdjustChangeState(int xDistanceDetection, int yDistanceD
 		if (isBallBeingDetectedInX == false) { ballDetectedInXTimer = millis(); }
 
 		// Check if specified persistence has elapsed, otherwise continue line-following
-		if (millis() - ballDetectedInXTimer > DETECTION_PERSISTENCE)
+		if (millis() - ballDetectedInXTimer > DETECTION_PERSISTENCE_X)
 		{
 			// Ball bearing detected to the side of robot
 			newState = STATE_4;
+			xDetectedDistance = xDistanceDetection;
 			isBallBeingDetectedInX = false;
 		}
 		else
@@ -602,16 +609,17 @@ int _ballDetectionOrLineAdjustChangeState(int xDistanceDetection, int yDistanceD
 		}
 		isBallBeingDetectedInX = true;
 	}
-	else if (yDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD)
+	else if (yDistanceDetection <= MAX_BALL_DETECTION_THRESHOLD_Y)
 	{
 		// If first detection in this direction, begin persistence timer
 		if (isBallBeingDetectedInY == false) { ballDetectedInYTimer = millis(); }
 
 		// Check if specified persistence has elapsed, otherwise continue line-following
-		if (millis() - ballDetectedInYTimer > DETECTION_PERSISTENCE)
+		if (millis() - ballDetectedInYTimer > DETECTION_PERSISTENCE_Y)
 		{
 			// Ball bearing detected in front of robot
 			newState = STATE_5;
+			yDetectedDistance = yDistanceDetection;
 			isBallBeingDetectedInY = false;
 		}
 		else

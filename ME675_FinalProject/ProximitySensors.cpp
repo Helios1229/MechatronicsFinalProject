@@ -71,7 +71,10 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 					// Read current value from the sensor
 					double analogLongRangeXIR = analogRead(IR_X_SENSOR_PIN);
 					distance = LONG_RANGE_X_MULTIPLIER * pow(analogLongRangeXIR, LONG_RANGE_X_POWER);
-					if ((distance > LONG_RANGE_MAX_DISTANCE) || (distance < 0)) { distance = LONG_RANGE_INVALID_DISTANCE; }
+
+					// Validity Checks
+					if (distance > LONG_RANGE_MAX_DISTANCE) { distance = LONG_RANGE_MAX_DISTANCE; }
+					else if(distance < LONG_RANGE_MIN_DISTANCE) { distance = LONG_RANGE_INVALID_DISTANCE; }
 					irReadingsLongRangeX[currentReadingIndexLongRangeX] = distance;
 
 					// Add the reading to the total
@@ -95,7 +98,10 @@ int CalculateIRDistance(SharpSensorModel sensorType, DirectionOfIR direction)
 					// Read current value from the sensor
 					double analogLongRangeYIR = analogRead(IR_Y_SENSOR_PIN);
 					distance = LONG_RANGE_Y_MULTIPLIER * pow(analogLongRangeYIR, LONG_RANGE_Y_POWER);
-					if ((distance > LONG_RANGE_MAX_DISTANCE) || (distance < 0)) { distance = LONG_RANGE_INVALID_DISTANCE; }
+
+					// Validity Checks
+					if (distance > LONG_RANGE_MAX_DISTANCE) { distance = LONG_RANGE_MAX_DISTANCE; }
+					else if (distance < LONG_RANGE_MIN_DISTANCE) { distance = LONG_RANGE_INVALID_DISTANCE; }
 					irReadingsLongRangeY[currentReadingIndexLongRangeY] = distance;
 
 					// Add the reading to the total
