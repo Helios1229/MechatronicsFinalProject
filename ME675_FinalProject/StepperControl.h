@@ -14,13 +14,11 @@ const int PWM_DUTY_CYCLE_DEFAULT = 250;									// Default Duty Cycle to provide
 const AMIS30543::stepMode DEFAULT_STEP_SIZE = AMIS30543::MicroStep8;	// Microsteps corresponding to one full step
 const int STEP_PULSE_WIDTH = 3;											// Number of microseconds to hold each step pulse
 const int DIRECTION_PULSE_WIDTH = 1;									// Number of microseconds to hold each direction pulse
-const int POST_STEP_DELAY_MICROSEC = 500;								// Number of microseconds to delay after stepping
-const int START_MOVEMENT_PERIOD = 2000;									// Number of milliseconds to move to starting line
+const int ROTATION_PERIOD = 1500;										// Number of milliseconds to move to starting line
 const bool RIGHT_STEPPER_FORWARD_DIRECTION = 0;							// Boolean value corresponding to right stepper forward movement
 const bool LEFT_STEPPER_FORWARD_DIRECTION = 1;							// Boolean value corresponding to left stepper forward movement
 
 void StepperInitialization();
-void MoveToStartLine();
 void StartLineFollowingMoveStraight();
 void StartLineFollowingSlowMovement();
 void LineFollowingMoveCW();
@@ -29,10 +27,14 @@ void LineFollowingMoveFarRight();
 void LineFollowingMoveLeft();
 void LineFollowingMoveFarLeft();
 void LineFollowingSlowMovement();
+void BallDetectVerySlowMovement();
 void BallLocateVerySlowMovement();
 void AdjustPositionIntoCloseRange();
 void StopMovement();
-void Rotate90CW();
+void Rotate45CW();
+void Rotate135CW();
+void Rotate45CCW();
+void Rotate135CCW();
 void Rotate90CCW();
 void RotateSlowCW();
 void _setDirection(uint8_t dirPin, bool dir);

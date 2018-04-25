@@ -23,7 +23,7 @@ void InitializePulleyMotorControl()
 void LowerPulley()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < 6750)
+	while (millis() - currentTime < PULLEY_LOWER_PERIOD)
 	{
 		digitalWrite(LOWER_PULLEY_PIN, HIGH);
 	}

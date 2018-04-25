@@ -167,17 +167,32 @@ void LineFollowingSlowMovement()
 	delay(1);
 }
 
+void BallDetectVerySlowMovement()
+{
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep64);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep64);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+}
+
 void BallLocateVerySlowMovement()
 {
 	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
@@ -185,7 +200,7 @@ void BallLocateVerySlowMovement()
 void AdjustPositionIntoCloseRange()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < 1500)
+	while (millis() - currentTime < 2500)
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
@@ -201,10 +216,10 @@ void AdjustPositionIntoCloseRange()
 	}
 }
 
-void Rotate90CW()
+void Rotate45CW()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < 2000)
+	while (millis() - currentTime < (ROTATION_PERIOD*0.5))
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
@@ -220,10 +235,67 @@ void Rotate90CW()
 	}
 }
 
+void Rotate135CW()
+{
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < (ROTATION_PERIOD*1.5))
+	{
+		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+		// Step the right motor
+		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+
+		// Step the left motor
+		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+	}
+}
+
+void Rotate45CCW()
+{
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < (ROTATION_PERIOD*0.5))
+	{
+		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+		// Step the right motor
+		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+
+		// Step the left motor
+		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(LEFT_STEPPER_DIR_PIN, !LEFT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+	}
+}
+
+void Rotate135CCW()
+{
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < (ROTATION_PERIOD*1.5))
+	{
+		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+		// Step the right motor
+		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+
+		// Step the left motor
+		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(LEFT_STEPPER_DIR_PIN, !LEFT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+	}
+}
+
 void Rotate90CCW()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < 2000)
+	while (millis() - currentTime < ROTATION_PERIOD)
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
@@ -244,12 +316,12 @@ void RotateSlowCW()
 	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }

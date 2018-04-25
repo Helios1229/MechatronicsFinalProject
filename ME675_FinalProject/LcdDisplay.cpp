@@ -55,32 +55,38 @@ void LcdDisplayLineSensors(LineDetectionStructure lineStruct)
 	lcd.print(lineStruct.Sensor0LineDetected);
 }
 
-void LcdDisplayMovementXandYIRdistance(char value1[], int value2, int value3, char value4[])
+void LcdDisplayStateAndDistance(char state[], char description[], int distLeftX, int distLeftY, int DistRightX, int DistRightY)
 {
 	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd.print(value1);
-	lcd.setCursor(10, 0);
-	lcd.print(value2);
-	lcd.setCursor(14, 0);
-	lcd.print(value3);
+	lcd.print(state);
+	lcd.setCursor(9, 0);
+	lcd.print(description);
+
 	lcd.setCursor(0, 1);
-	lcd.print(value4);
+	lcd.print(distLeftX);
+	lcd.setCursor(4, 1);
+	lcd.print(distLeftY);
+	lcd.setCursor(8, 1);
+	lcd.print(DistRightX);
+	lcd.setCursor(12, 1);
+	lcd.print(DistRightY);
 }
 
-void LcdDisplayMovementYIRdistance(char value1[], int value2, char value3[])
+void LcdDisplayTextAndDistance(char state[], char description[], int distance)
 {
 	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
 	lcd.clear();
 	lcd.setCursor(0, 0);
-	lcd.print(value1);
-	lcd.setCursor(10, 0);
-	lcd.print(value2);
-	lcd.setCursor(0, 1);
-	lcd.print(value3);
-}
+	lcd.print(state);
 
+	lcd.setCursor(0, 1);
+	lcd.print(description);
+
+	lcd.setCursor(14, 1);
+	lcd.print(distance);
+}
 
 void LcdDisplayText(char value[])
 {

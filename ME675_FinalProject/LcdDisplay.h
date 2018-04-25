@@ -11,8 +11,8 @@ const unsigned int LCD_NUMBER_OF_ROWS = 2;		// Number of rows in the LCD
 void LcdDisplayInitialization();
 void LcdDisplayLineSensorArray(unsigned char text[]);
 void LcdDisplayLineSensors(LineDetectionStructure lineStruct);
-void LcdDisplayMovementXandYIRdistance(char value1[], int value2, int value3, char value4[]);
-void LcdDisplayMovementYIRdistance(char value1[], int value2, char value3[]);
+void LcdDisplayStateAndDistance(char state[], char description[], int distLeftX, int distLeftY, int DistRightX, int DistRightY);
+void LcdDisplayTextAndDistance(char state[], char description[], int distance);
 void LcdDisplayText(char value[]);
 void LcdDisplayText(float value);
 void LcdDisplayText(char value1[], float value2);
