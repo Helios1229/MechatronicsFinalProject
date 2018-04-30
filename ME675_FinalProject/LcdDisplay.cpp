@@ -1,5 +1,6 @@
 #include "LcdDisplay.h"
 #include "LineFollower.h"
+#include "ProximitySensors.h"
 #include <LiquidCrystal.h>
 #include <Arduino.h>
 
@@ -53,6 +54,27 @@ void LcdDisplayLineSensors(LineDetectionStructure lineStruct)
 	lcd.print(lineStruct.Sensor1LineDetected);
 	lcd.setCursor(12, 1);
 	lcd.print(lineStruct.Sensor0LineDetected);
+}
+
+void LcdDisplayDigitalSensors(DigitalCloseRangeArray digitalArray)
+{
+	//lcd.begin(LCD_CHARACTER_WIDTH, LCD_NUMBER_OF_ROWS);
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print(digitalArray.isIRleft3Detected);
+	lcd.setCursor(4, 0);
+	lcd.print(digitalArray.isIRleft2Detected);
+	lcd.setCursor(8, 0);
+	lcd.print(digitalArray.isIRleft1Detected);
+	lcd.setCursor(15, 0);
+	lcd.print(digitalArray.isIRmiddleDetected);
+
+	lcd.setCursor(0, 1);
+	lcd.print(digitalArray.isIRright1Detected);
+	lcd.setCursor(4, 1);
+	lcd.print(digitalArray.isIRright2Detected);
+	lcd.setCursor(8, 1);
+	lcd.print(digitalArray.isIRright3Detected);
 }
 
 void LcdDisplayStateAndDistance(char state[], char description[], int distLeftX, int distLeftY, int DistRightX, int DistRightY)

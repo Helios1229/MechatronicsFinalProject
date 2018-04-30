@@ -20,14 +20,23 @@ int currentIndexLongRangeRightX = 0;
 int currentIndexLongRangeRightY = 0;
 int currentIndexShortRangeLeftX = 0;
 
-int averageDistance = 0;
-
 void InitializeProximitySensors()
 {
-	pinMode(US_ECHO_PIN, INPUT);
-	pinMode(US_TRIGGER_PIN, OUTPUT);
+	pinMode(US_X_ECHO_PIN, INPUT);
+	pinMode(US_X_TRIGGER_PIN, OUTPUT);
+	pinMode(US_Y_ECHO_PIN, INPUT);
+	pinMode(US_Y_TRIGGER_PIN, OUTPUT);
 
-	digitalWrite(US_TRIGGER_PIN, LOW);
+	pinMode(DIGITAL_IR_LEFT3_PIN, INPUT);
+	pinMode(DIGITAL_IR_LEFT2_PIN, INPUT);
+	pinMode(DIGITAL_IR_LEFT1_PIN, INPUT);
+	pinMode(DIGITAL_IR_MIDDLE_PIN, INPUT);
+	pinMode(DIGITAL_IR_RIGHT1_PIN, INPUT);
+	pinMode(DIGITAL_IR_RIGHT2_PIN, INPUT);
+	pinMode(DIGITAL_IR_RIGHT3_PIN, INPUT);
+
+	digitalWrite(US_X_TRIGGER_PIN, LOW);
+	digitalWrite(US_Y_TRIGGER_PIN, LOW);
 
 	// Initialize all running averages to 0
 	for (int index = 0; index < AVERAGE_READING_WINDOW; index++)
@@ -43,6 +52,8 @@ void InitializeProximitySensors()
 int CalculateLongIRDistance(DirectionOfLongIR direction)
 {
 	int distance = 0;
+	int averageDistance = 0;
+	double analogLongRangeIR = 0;
 	switch (direction)
 	{
 		case (DirectionOfLongIR::IR_X_LEFT):
@@ -51,8 +62,8 @@ int CalculateLongIRDistance(DirectionOfLongIR direction)
 			totalLongRangeLeftX = totalLongRangeLeftX - irReadingsLongRangeLeftX[currentIndexLongRangeLeftX];
 
 			// Read current value from the sensor
-			double analogLongRangeXIR = analogRead(LONG_RANGE_IR_X_LEFT_SENSOR_PIN);
-			distance = LONG_RANGE_X_LEFT_MULTIPLIER * pow(analogLongRangeXIR, LONG_RANGE_X_LEFT_POWER);
+			analogLongRangeIR = analogRead(LONG_RANGE_IR_X_LEFT_SENSOR_PIN);
+			distance = LONG_RANGE_X_LEFT_MULTIPLIER * pow(analogLongRangeIR, LONG_RANGE_X_LEFT_POWER);
 
 			// Validity Checks
 			if (distance > LONG_RANGE_MAX_DISTANCE) { distance = LONG_RANGE_MAX_DISTANCE; }
@@ -78,8 +89,8 @@ int CalculateLongIRDistance(DirectionOfLongIR direction)
 			totalLongRangeLeftY = totalLongRangeLeftY - irReadingsLongRangeLeftY[currentIndexLongRangeLeftY];
 
 			// Read current value from the sensor
-			double analogLongRangeYIR = analogRead(LONG_RANGE_IR_Y_LEFT_SENSOR_PIN);
-			distance = LONG_RANGE_Y_LEFT_MULTIPLIER * pow(analogLongRangeYIR, LONG_RANGE_Y_LEFT_POWER);
+			analogLongRangeIR = analogRead(LONG_RANGE_IR_Y_LEFT_SENSOR_PIN);
+			distance = LONG_RANGE_Y_LEFT_MULTIPLIER * pow(analogLongRangeIR, LONG_RANGE_Y_LEFT_POWER);
 
 			// Validity Checks
 			if (distance > LONG_RANGE_MAX_DISTANCE) { distance = LONG_RANGE_MAX_DISTANCE; }
@@ -99,6 +110,60 @@ int CalculateLongIRDistance(DirectionOfLongIR direction)
 			averageDistance = totalLongRangeLeftY / AVERAGE_READING_WINDOW;
 			break;
 		}
+		case (DirectionOfLongIR::IR_X_RIGHT):
+		{
+			// Subtract previous reading
+			totalLongRangeRightX = totalLongRangeRightX - irReadingsLongRangeRightX[currentIndexLongRangeRightX];
+
+			// Read current value from the sensor
+			analogLongRangeIR = analogRead(LONG_RANGE_IR_X_RIGHT_SENSOR_PIN);
+			distance = LONG_RANGE_X_RIGHT_MULTIPLIER * pow(analogLongRangeIR, LONG_RANGE_X_RIGHT_POWER);
+
+			// Validity Checks
+			if (distance > LONG_RANGE_MAX_DISTANCE) { distance = LONG_RANGE_MAX_DISTANCE; }
+			else if (distance < LONG_RANGE_MIN_DISTANCE) { distance = LONG_RANGE_INVALID_DISTANCE; }
+			irReadingsLongRangeRightX[currentIndexLongRangeRightX] = distance;
+
+			// Add the reading to the total
+			totalLongRangeRightX = totalLongRangeRightX + irReadingsLongRangeRightX[currentIndexLongRangeRightX];
+
+			// Move index to next read position
+			currentIndexLongRangeRightX = currentIndexLongRangeRightX + 1;
+
+			// Check if the end of the reading array has been reached
+			if (currentIndexLongRangeRightX >= AVERAGE_READING_WINDOW) { currentIndexLongRangeRightX = 0; }
+
+			// Return the filtered value
+			averageDistance = totalLongRangeRightX / AVERAGE_READING_WINDOW;
+			break;
+		}
+		case (DirectionOfLongIR::IR_Y_RIGHT):
+		{
+			// Subtract previous reading
+			totalLongRangeRightY = totalLongRangeRightY - irReadingsLongRangeRightY[currentIndexLongRangeRightY];
+
+			// Read current value from the sensor
+			analogLongRangeIR = analogRead(LONG_RANGE_IR_Y_RIGHT_SENSOR_PIN);
+			distance = LONG_RANGE_Y_RIGHT_MULTIPLIER * pow(analogLongRangeIR, LONG_RANGE_Y_RIGHT_POWER);
+
+			// Validity Checks
+			if (distance > LONG_RANGE_MAX_DISTANCE) { distance = LONG_RANGE_MAX_DISTANCE; }
+			else if (distance < LONG_RANGE_MIN_DISTANCE) { distance = LONG_RANGE_INVALID_DISTANCE; }
+			irReadingsLongRangeRightY[currentIndexLongRangeRightY] = distance;
+
+			// Add the reading to the total
+			totalLongRangeRightY = totalLongRangeRightY + irReadingsLongRangeRightY[currentIndexLongRangeRightY];
+
+			// Move index to next read position
+			currentIndexLongRangeRightY = currentIndexLongRangeRightY + 1;
+
+			// Check if the end of the reading array has been reached
+			if (currentIndexLongRangeRightY >= AVERAGE_READING_WINDOW) { currentIndexLongRangeRightY = 0; }
+
+			// Return the filtered value
+			averageDistance = totalLongRangeRightY / AVERAGE_READING_WINDOW;
+			break;
+		}
 	}
 
 	return averageDistance;
@@ -107,6 +172,7 @@ int CalculateLongIRDistance(DirectionOfLongIR direction)
 int CalculateShortIRDistance()
 {
 	int distance = 0;
+	int averageDistance = 0;
 
 	// Subtract previous reading
 	totalCloseRangeLeftX = totalCloseRangeLeftX - irReadingsShortRangeLeftX[currentIndexShortRangeLeftX];
@@ -132,17 +198,83 @@ int CalculateShortIRDistance()
 	return averageDistance;
 }
 
-int CalculateUltrasonicDistance()
+DigitalCloseRangeArray CalculateDigitalIRarray()
 {
-	// Trigger the US Sensor for a reading
-	digitalWrite(US_TRIGGER_PIN, LOW);
-	delayMicroseconds(2);
-	digitalWrite(US_TRIGGER_PIN, HIGH);
-	delayMicroseconds(10);
-	digitalWrite(US_TRIGGER_PIN, LOW);
+	int count = 0;
+	int digitalLeft3 = 0;
+	int digitalLeft2 = 0;
+	int digitalLeft1 = 0;
+	int digitalMiddle = 0;
+	int digitalRight1 = 0;
+	int digitalRight2 = 0;
+	int digitalRight3 = 0;
 
-	// Measure the reflected signal for distance calculation
-	long duration = pulseIn(US_ECHO_PIN, HIGH);
-	int distance = duration * 0.034 / 2;
+	DigitalCloseRangeArray digitalIRarray;
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < 25)
+	{
+		if (digitalRead(DIGITAL_IR_LEFT3_PIN)==LOW) { digitalLeft3 = digitalLeft3 + 1; }
+		if (digitalRead(DIGITAL_IR_LEFT2_PIN)==LOW) { digitalLeft2 = digitalLeft2 + 1; }
+		if (digitalRead(DIGITAL_IR_LEFT1_PIN)==LOW) { digitalLeft1 = digitalLeft1 + 1; }
+		if (digitalRead(DIGITAL_IR_MIDDLE_PIN)==LOW) { digitalMiddle = digitalMiddle + 1; }
+		if (digitalRead(DIGITAL_IR_RIGHT1_PIN)==LOW) { digitalRight1 = digitalRight1 + 1; }
+		if (digitalRead(DIGITAL_IR_RIGHT2_PIN)==LOW) { digitalRight2 = digitalRight2 + 1; }
+		if (digitalRead(DIGITAL_IR_RIGHT3_PIN)==LOW) { digitalRight3 = digitalRight3 + 1; }
+		count = count + 1;
+	}
+
+	if ((float)digitalLeft3 / (float)count > PERCENT_DIGITAL_VALID_READS) { digitalIRarray.isIRleft3Detected = true; }
+	else { digitalIRarray.isIRleft3Detected = false; }
+	if ((float)digitalLeft2 / (float)count > PERCENT_DIGITAL_VALID_READS) { digitalIRarray.isIRleft2Detected = true; }
+	else { digitalIRarray.isIRleft2Detected = false; }
+	if ((float)digitalLeft1 / (float)count > PERCENT_DIGITAL_VALID_READS) { digitalIRarray.isIRleft1Detected = true; }
+	else { digitalIRarray.isIRleft1Detected = false; }
+	if ((float)digitalMiddle / (float)count > PERCENT_DIGITAL_VALID_READS) { digitalIRarray.isIRmiddleDetected = true; }
+	else { digitalIRarray.isIRmiddleDetected = false; }
+	if ((float)digitalRight1 / (float)count > PERCENT_DIGITAL_VALID_READS) { digitalIRarray.isIRright1Detected = true; }
+	else { digitalIRarray.isIRright1Detected = false; }
+	if ((float)digitalRight2 / (float)count > PERCENT_DIGITAL_VALID_READS) { digitalIRarray.isIRright2Detected = true; }
+	else { digitalIRarray.isIRright2Detected = false; }
+	if ((float)digitalRight3 / (float)count > PERCENT_DIGITAL_VALID_READS) { digitalIRarray.isIRright3Detected = true; }
+	else { digitalIRarray.isIRright3Detected = false; }
+
+	return digitalIRarray;
+}
+
+int CalculateUltrasonicDistance(DirectionOfUS direction)
+{
+	int distance = 0;
+	long duration = 0;
+	switch (direction)
+	{
+		case (DirectionOfUS::US_X):
+		{
+			digitalWrite(US_X_TRIGGER_PIN, LOW);
+			delayMicroseconds(2);
+			digitalWrite(US_X_TRIGGER_PIN, HIGH);
+			delayMicroseconds(10);
+			digitalWrite(US_X_TRIGGER_PIN, LOW);
+
+			// Measure the reflected signal for distance calculation
+			duration = pulseIn(US_X_ECHO_PIN, HIGH);
+			distance = duration * 0.034 / 2;
+			break;
+		}
+		case (DirectionOfUS::US_Y):
+		{
+			digitalWrite(US_Y_TRIGGER_PIN, LOW);
+			delayMicroseconds(2);
+			digitalWrite(US_Y_TRIGGER_PIN, HIGH);
+			delayMicroseconds(10);
+			digitalWrite(US_Y_TRIGGER_PIN, LOW);
+
+			// Measure the reflected signal for distance calculation
+			duration = pulseIn(US_Y_ECHO_PIN, HIGH);
+			distance = duration * 0.034 / 2;
+			break;
+		}
+	}
+
+	// Trigger the US Sensor for a reading
 	return distance;
 }

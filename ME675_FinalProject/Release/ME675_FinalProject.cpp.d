@@ -21,9 +21,9 @@ C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Re
  C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\ME675_FinalProject.h \
  C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\LcdDisplay.h \
  C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\LineFollower.h \
+ C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\ProximitySensors.h \
  C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\StepperControl.h \
  C:\Users\JonPa\OneDrive\Documents\Arduino\libraries\AMIS30543/AMIS30543.h \
- C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\ProximitySensors.h \
  C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\RGB_Sensor.h \
  C:\Users\JonPa\AppData\Local\Temp\VMBuilds\ME675_FinalProject\mega_atmega2560\Release\PulleyControl.h \
  C:\Users\JonPa\OneDrive\Documents\Arduino\libraries\elapsedMillis/elapsedMillis.h

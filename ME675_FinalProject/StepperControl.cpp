@@ -182,44 +182,55 @@ void BallDetectVerySlowMovement()
 	delay(1);
 }
 
-void BallLocateVerySlowMovement()
+void DigitalSensorDetectVerySlowMovement()
 {
 	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
 	// Step the right motor
-	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep128);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
-	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep16);
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep128);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+}
+
+void BallLocateSlowMovement()
+{
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
 
 void AdjustPositionIntoCloseRange()
 {
-	unsigned long currentTime = millis();
-	while (millis() - currentTime < 2500)
-	{
-		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
-		// Step the right motor
-		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
-		_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
-		delay(1);
+	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep64);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
 
-		// Step the left motor
-		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
-		_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
-		delay(1);
-	}
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep64);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
 }
 
 void Rotate45CW()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < (ROTATION_PERIOD*0.5))
+	while (millis() - currentTime < ROTATION_PERIOD_45CW)
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
@@ -238,7 +249,7 @@ void Rotate45CW()
 void Rotate135CW()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < (ROTATION_PERIOD*1.5))
+	while (millis() - currentTime < ROTATION_PERIOD_135CW)
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
@@ -257,7 +268,7 @@ void Rotate135CW()
 void Rotate45CCW()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < (ROTATION_PERIOD*0.5))
+	while (millis() - currentTime < ROTATION_PERIOD_45CCW)
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
@@ -276,7 +287,7 @@ void Rotate45CCW()
 void Rotate135CCW()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < (ROTATION_PERIOD*1.5))
+	while (millis() - currentTime < ROTATION_PERIOD_135CCW)
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
@@ -295,7 +306,45 @@ void Rotate135CCW()
 void Rotate90CCW()
 {
 	unsigned long currentTime = millis();
-	while (millis() - currentTime < ROTATION_PERIOD)
+	while (millis() - currentTime < ROTATION_PERIOD_90)
+	{
+		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+		// Step the right motor
+		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+
+		// Step the left motor
+		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(LEFT_STEPPER_DIR_PIN, !LEFT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+	}
+}
+
+void Rotate90CW()
+{
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < ROTATION_PERIOD_90)
+	{
+		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+		// Step the right motor
+		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+
+		// Step the left motor
+		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
+		_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+	}
+}
+
+void Rotate180()
+{
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < ROTATION_PERIOD_180)
 	{
 		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
@@ -316,13 +365,62 @@ void RotateSlowCW()
 	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
 
 	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+}
+
+void RotateSlowCCW()
+{
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+	// Step the right motor
+	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+	_setDirection(RIGHT_STEPPER_DIR_PIN, RIGHT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+
+	// Step the left motor
+	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+	_setDirection(LEFT_STEPPER_DIR_PIN, !LEFT_STEPPER_FORWARD_DIRECTION);
+	delay(1);
+}
+
+void ReverseUnderMagnet()
+{
+	unsigned long currentTime = millis();
+	while (millis() - currentTime < REVERSE_UNDER_MAGNET_PERIOD)
+	{
+		_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+		// Step the right motor
+		_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+		_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+
+		// Step the left motor
+		_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep32);
+		_setDirection(LEFT_STEPPER_DIR_PIN, !LEFT_STEPPER_FORWARD_DIRECTION);
+		delay(1);
+	}
+}
+
+void ReverseMovement()
+{
+	_setPWM(PWM_DUTY_CYCLE_DEFAULT);
+
+	// Step the right motor
 	_setStepping(RIGHT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
 	_setDirection(RIGHT_STEPPER_DIR_PIN, !RIGHT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 
 	// Step the left motor
 	_setStepping(LEFT_STEPPER_STEP_PIN, AMIS30543::MicroStep8);
-	_setDirection(LEFT_STEPPER_DIR_PIN, LEFT_STEPPER_FORWARD_DIRECTION);
+	_setDirection(LEFT_STEPPER_DIR_PIN, !LEFT_STEPPER_FORWARD_DIRECTION);
 	delay(1);
 }
 
